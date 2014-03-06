@@ -10,7 +10,7 @@ public class Database {
 	/**
 	 * Handels connection to database server.
 	 * 
-	 * hei
+	 * 
 	 */
 
 	private static Connection connection = null;
