@@ -16,7 +16,7 @@ public class Appointment {
 
 	/**
 	 * Adds the starttime of the appointment.
-	 * 
+	 * Hallo s¿te mennesker
 	 * @param time
 	 */
 	public void addStarttime(int time) {

@@ -10,7 +10,7 @@ public class Database {
 	/**
 	 * Handels connection to database server.
 	 * 
-	 * 
+	 * Hallooo alle s¿te mennesker
 	 */
 
 	private static Connection connection = null;
