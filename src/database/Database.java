@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class Database {
 	/**
@@ -81,6 +82,40 @@ public class Database {
 		} catch(SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	/**
+	 * SQL queries that INSERT in the database and return the keys.
+	 * 
+	 * @param sql
+	 * @return keylist
+	 * @throws SQLException
+	 */
+	public ArrayList<Integer> insertAndGetKeysQuery(String sql) {
+		Statement s;
+		try {
+			s = connection.createStatement();
+			s.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+			ResultSet keys = s.getGeneratedKeys();
+			ArrayList<Integer> keyList = new ArrayList<Integer>();
+			int i = 1;
+			while (keys.next()) {
+				keyList.add(keys.getInt(i));
+				i++;
+			}
+			return keyList;
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Returns the connection.
+	 * 
+	 * @return connection
+	 */
+	public Connection getConnection() {
+		return connection;
 	}
 	
 }
