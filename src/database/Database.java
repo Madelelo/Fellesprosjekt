@@ -30,6 +30,7 @@ public class Database {
 		try { //Logger inn i databasen
 			connection = DriverManager.getConnection(connectionURL, user, pw);
 			stat = connection.createStatement();
+			System.out.println("Koblet til database.");
 		} catch(Exception e) {
 			System.out.println("Oppkobling mot database feilet: " + e.getMessage());
 		}
