@@ -14,6 +14,13 @@ public class DatabaseConnection {
 		db = new Database();
 	}
 	
+	/**
+	 * Puts the appointment in the database, and calls function to put the relation in the database.
+	 * 
+	 * @param appmnt
+	 * @param empl
+	 * @return boolean
+	 */
 	public boolean createAppointment(Appointment appmnt, Employee empl) {
 
 		String qry = "INSERT INTO appointment (date, starttime, endtime, duration, location, description) VALUES ('" + appmnt.getDate() + "', '" + appmnt.getStarttime()
@@ -27,6 +34,15 @@ public class DatabaseConnection {
 		return true;
 	}
 	
+	/**
+	 * Puts the relation between employee and appointment in the database.
+	 * 
+	 * @param email
+	 * @param appmntkey
+	 * @param owner
+	 * @param participates
+	 * @return boolean
+	 */
 	public boolean hasAppointment(String email, int appmntkey, boolean owner, boolean participates) {
 		
 		String qry = "INSERT INTO appointment_has_employee VALUES ('" + appmntkey + "', '" + email + "', '"
@@ -78,9 +94,4 @@ public class DatabaseConnection {
 		
 		return connected;
 	}
-	
-	public boolean exists(Appointment appmnt) {
-		return false;
-	}
-
 }
