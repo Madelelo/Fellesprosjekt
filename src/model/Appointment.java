@@ -5,6 +5,7 @@ import java.util.List;
 public class Appointment {
 
 	private int appID;
+	private int date;
 	private int starttime;
 	private int endtime;
 	private double duration;
@@ -12,11 +13,28 @@ public class Appointment {
 	private String description;
 	public List<Employee> participants;
 	
-	public Appointment(int starttime, int endtime, String location, String description) {
+	/**
+	 * Creates the appointment.
+	 * 
+	 * @param starttime
+	 * @param endtime
+	 * @param location
+	 * @param description
+	 */
+	public Appointment(int date, int starttime, int endtime, String location, String description) {
+		setDate(date);
 		setStarttime(starttime);
 		setEndtime(endtime);
 		setLocation(location);
 		setDescription(description);
+	}
+	
+	public void setDate(int date) {
+		this.date = date;
+	}
+	
+	public int getDate() {
+		return date;
 	}
 
 	/**
@@ -26,7 +44,10 @@ public class Appointment {
 	 */
 	public void setStarttime(int time) {
 		starttime = time;
-		return;
+	}
+	
+	public int getStarttime() {
+		return starttime;
 	}
 
 	/**
@@ -36,7 +57,10 @@ public class Appointment {
 	 */
 	public void setEndtime(int time) {
 		endtime = time;
-		return;
+	}
+	
+	public int getEndtime() {
+		return endtime;
 	}
 
 	/**
@@ -46,7 +70,10 @@ public class Appointment {
 	 */
 	public void setDuration(double dur) {
 		duration = dur;
-		return;
+	}
+	
+	public double getDuration() {
+		return duration;
 	}
 	
 	/**
@@ -55,7 +82,10 @@ public class Appointment {
 	 */
 	public void setLocation(String loc) {
 		location = loc;
-		return;
+	}
+	
+	public String getLocation() {
+		return location;
 	}
 	
 	/**
@@ -64,7 +94,10 @@ public class Appointment {
 	 */
 	public void setDescription(String desc) {
 		description = desc;
-		return;
+	}
+	
+	public String getDescription() {
+		return description;
 	}
 
 }

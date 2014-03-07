@@ -7,7 +7,17 @@ public class Employee {
 	private String username;
 	private String password;
 	public List<Appointment> appointments;
-
+	
+	public Employee(String email, String username, String password) {
+		this.email = email;
+		this.username = username;
+		this.password = password;
+	}
+	
+	public Employee() {
+		
+	}
+	
 	/**
 	 * Returns an employees email.
 	 * 

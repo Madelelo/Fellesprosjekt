@@ -9,6 +9,7 @@ import javax.swing.JTextField;
 
 public class NewAppmntPane extends JPanel {
 
+	protected static JTextField date;
 	protected static JTextField starttime;
 	protected static JTextField endtime;
 	protected static JTextField location;
@@ -16,6 +17,7 @@ public class NewAppmntPane extends JPanel {
 	protected static JButton newAppmntBtn;
 	
 	public NewAppmntPane() {
+		date = new JTextField();
 		starttime = new JTextField();
 		endtime = new JTextField();
 		location = new JTextField();
@@ -24,9 +26,11 @@ public class NewAppmntPane extends JPanel {
 		
 		setLayout(new GridLayout(6, 2));
 		
-		add(new JLabel("Starttidspunkt:"));
+		add(new JLabel("Dato (YYYYMMDD):"));
+		add(date);
+		add(new JLabel("Starttidspunkt (HHMMSS):"));
 		add(starttime);
-		add(new JLabel("Slutttidspunkt:"));
+		add(new JLabel("Slutttidspunkt (HHMMSS):"));
 		add(endtime);
 		add(new JLabel("Sted:"));
 		add(location);

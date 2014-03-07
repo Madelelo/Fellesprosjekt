@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import database.Database;
 import model.*;
 
 public class MainFrame extends JFrame implements ActionListener {
@@ -26,7 +25,8 @@ public class MainFrame extends JFrame implements ActionListener {
 	private static JPanel responsePane;
 	private static JLabel responseLabel;
 	
-	private static Database db;
+	private static DatabaseConnection db;
+	private static Employee loggedInAs;
 	
 	public MainFrame() {
 		super("Avtalekalender");
@@ -48,19 +48,15 @@ public class MainFrame extends JFrame implements ActionListener {
 	 * Initializes the class variables.
 	 */
 	public void init() {
-		db = new Database();
+		db = new DatabaseConnection();
 		loginPane = new LoginPane();
 		menuPane = new MenuPane();
 		newAppmntPane = new NewAppmntPane();
 		responseLabel = new JLabel();
 		responsePane = new JPanel();
 		
-		try {
-			if(db.getConnection().isValid(3)) {
-				responseLabel.setText("Koblet til database.");
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if(db.isConnected()) {
+			responseLabel.setText("Koblet til database.");
 		}
 	}
 	
@@ -103,23 +99,16 @@ public class MainFrame extends JFrame implements ActionListener {
 		if(e.getActionCommand().equals("Logg inn")) {
 			String username = loginPane.usernameField.getText();
 			String password = loginPane.pwField.getText();
-			
-			String qry = "SELECT username, password FROM employee WHERE username='" + username + "' AND password='" + password + "';";
-			
-			ResultSet result = db.readQuery(qry);
-			try {
-				if(result.next()) {
-					responseLabel.setText("Du er nå logget inn.");
-					remove(loginPane);
-					
-					programSession();
-				} else {
-					responseLabel.setText("Feil brukernavn eller passord.");
-					loginPane.usernameField.setText("");
-					loginPane.pwField.setText("");
-				}
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+			loggedInAs = db.validateLogin(username, password);
+
+			if(!loggedInAs.getEmail().isEmpty()) {
+				responseLabel.setText("Du er nå logget inn.");
+				remove(loginPane);		
+				programSession();
+			} else {
+				responseLabel.setText("Feil brukernavn eller passord.");
+				loginPane.usernameField.setText("");
+				loginPane.pwField.setText("");
 			}
 		}
 		
@@ -131,10 +120,15 @@ public class MainFrame extends JFrame implements ActionListener {
 		else if(e.getActionCommand().equals("Opprett avtale")) {
 			int start = Integer.parseInt(newAppmntPane.starttime.getText());
 			int end = Integer.parseInt(newAppmntPane.endtime.getText());
+			int date = Integer.parseInt(newAppmntPane.date.getText());
 			String loc = newAppmntPane.location.getText();
 			String desc = newAppmntPane.description.getText();
 			
-			Appointment appointment = new Appointment(start, end, loc, desc);
+			if(db.createAppointment(new Appointment(date, start, end, loc, desc), loggedInAs)) {
+				responseLabel.setText("Avtale lagt til.");
+			} else {
+				responseLabel.setText("Kunne ikke legge til avtale.");
+			}
 			
 			remove(newAppmntPane);
 			add(menuPane, BorderLayout.NORTH);
