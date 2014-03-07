@@ -12,34 +12,39 @@ public class Appointment {
 	private String description;
 	public List<Employee> participants;
 	
-	
+	public Appointment(int starttime, int endtime, String location, String description) {
+		setStarttime(starttime);
+		setEndtime(endtime);
+		setLocation(location);
+		setDescription(description);
+	}
 
 	/**
-	 * Adds the starttime of the appointment.
+	 * Sets the starttime of the appointment.
 	 * 
 	 * @param time
 	 */
-	public void addStarttime(int time) {
+	public void setStarttime(int time) {
 		starttime = time;
 		return;
 	}
 
 	/**
-	 * Adds the endtime of the appointment.
+	 * Sets the endtime of the appointment.
 	 * 
 	 * @param time
 	 */
-	public void addEndtime(int time) {
+	public void setEndtime(int time) {
 		endtime = time;
 		return;
 	}
 
 	/**
-	 * Adds the duration of the appointment.
+	 * Sets the duration of the appointment.
 	 * 
 	 * @param dur
 	 */
-	public void addDuration(double dur) {
+	public void setDuration(double dur) {
 		duration = dur;
 		return;
 	}
