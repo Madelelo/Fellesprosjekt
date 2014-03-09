@@ -21,6 +21,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	private static LoginPane loginPane;
 	private static MenuPane menuPane;
 	private static NewAppmntPane newAppmntPane;
+	private static ChangeAppmntPane changeAppmntPane;
 	
 	private static JPanel responsePane;
 	private static JLabel responseLabel;
@@ -33,7 +34,6 @@ public class MainFrame extends JFrame implements ActionListener {
 		setSize(400, 400);
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		//setResizable(false);
 		
 		init();
 		addActionListeners();
@@ -52,6 +52,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		loginPane = new LoginPane();
 		menuPane = new MenuPane();
 		newAppmntPane = new NewAppmntPane();
+		changeAppmntPane = new ChangeAppmntPane();
 		responseLabel = new JLabel();
 		responsePane = new JPanel();
 		
@@ -66,11 +67,17 @@ public class MainFrame extends JFrame implements ActionListener {
 	 */
 	public void addActionListeners() {
 		loginPane.loginBtn.addActionListener(this);
+		
 		menuPane.logoutBtn.addActionListener(this);
 		menuPane.newAppmntBtn.addActionListener(this);
 		menuPane.changeAppmntBtn.addActionListener(this);
 		menuPane.weekBtn.addActionListener(this);
+		
 		newAppmntPane.newAppmntBtn.addActionListener(this);
+		
+		changeAppmntPane.showAllBtn.addActionListener(this);
+		changeAppmntPane.inviteBtn.addActionListener(this);
+		changeAppmntPane.saveAppmntBtn.addActionListener(this);
 	}
 	
 	/**
@@ -135,7 +142,8 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if(e.getActionCommand().equals("Endre avtale")) {
-			
+			remove(menuPane);
+			add(changeAppmntPane, BorderLayout.NORTH);
 		}
 		
 		else if(e.getActionCommand().equals("Vis ukekalender")) {
