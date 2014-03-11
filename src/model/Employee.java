@@ -76,23 +76,4 @@ public class Employee {
 		password = pass;
 		return;
 	}
-
-	/**
-	 * Checks if the username and password the user puts in matches the username
-	 * and password of an employee. Both have to match to return true, if not,
-	 * an error message is printed to the user and the method returns false.
-	 * 
-	 * @param username
-	 * @param pass
-	 * @return
-	 */
-	public boolean login(String username, String pass) {
-		if (this.username == username && this.password == pass) {
-			return true;
-		} else {
-			System.out.println("Wrong username and password combination");
-			return false;
-		}
-	}
-
 }
