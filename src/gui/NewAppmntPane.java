@@ -22,6 +22,7 @@ public class NewAppmntPane extends JPanel {
 	protected static JTextField location;
 	protected static JTextField description;
 	protected static JButton newAppmntBtn;
+	protected static JButton inviteBtn;
 	protected static JList employeeList;
 	protected static JPanel pane;
 	
@@ -33,6 +34,7 @@ public class NewAppmntPane extends JPanel {
 		location = new JTextField();
 		description = new JTextField();
 		newAppmntBtn = new JButton("Opprett avtale");
+		inviteBtn = new JButton("Inviter ansatte");
 		
 		DefaultListModel listModel = new DefaultListModel();
 		ResultSet employees = MainFrame.db.getEmployees();
@@ -62,6 +64,7 @@ public class NewAppmntPane extends JPanel {
 		pane.add(newAppmntBtn);
 		add(pane, BorderLayout.NORTH);
 		add(employeeList, BorderLayout.SOUTH);
+		add(inviteBtn, BorderLayout.EAST);
 	}
 
 }

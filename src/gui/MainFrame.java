@@ -57,7 +57,12 @@ public class MainFrame extends JFrame implements ActionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		changeAppmntPane = new ChangeAppmntPane();
+		try {
+			changeAppmntPane = new ChangeAppmntPane();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		responseLabel = new JLabel();
 		responsePane = new JPanel();
 		
@@ -80,7 +85,6 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		newAppmntPane.newAppmntBtn.addActionListener(this);
 		
-		changeAppmntPane.showAllBtn.addActionListener(this);
 		changeAppmntPane.inviteBtn.addActionListener(this);
 		changeAppmntPane.saveAppmntBtn.addActionListener(this);
 	}
