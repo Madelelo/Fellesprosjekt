@@ -27,7 +27,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	private static JLabel responseLabel;
 	
 	protected static DatabaseConnection db;
-	private static Employee loggedInAs;
+	protected static Employee loggedInAs;
 	
 	public MainFrame() {
 		super("Avtalekalender");
