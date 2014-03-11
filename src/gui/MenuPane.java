@@ -24,8 +24,9 @@ public class MenuPane extends JPanel {
 		add(newAppmntBtn);
 		add(changeAppmntBtn);
 		add(weekBtn);
-		add(logoutBtn);
 		add(alarmBtn);
+		add(logoutBtn);
+		
 	}
 
 }
