@@ -15,7 +15,9 @@ public class Employee {
 	}
 
 	public Employee() {
-
+		email = "";
+		username = "";
+		password = "";
 	}
 
 	/**

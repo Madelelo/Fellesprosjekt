@@ -19,21 +19,22 @@ public class Database {
 	private static Statement stat = null;
 	private static String user = "erlingsp";
 	private static String pw = "lampe";
-	
+
 	/**
 	 * Connects to the database.
 	 * 
 	 * @throws Exception
 	 */
 	public Database() {
-		try { //Logger inn i databasen
+		try { // Logger inn i databasen
 			connection = DriverManager.getConnection(connectionURL, user, pw);
 			stat = connection.createStatement();
-		} catch(Exception e) {
-			System.out.println("Oppkobling mot database feilet: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Oppkobling mot database feilet: "
+					+ e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Closes the connection to the database.
 	 * 
@@ -46,7 +47,7 @@ public class Database {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * SQL queries that don't change the database.
 	 * 
@@ -59,16 +60,17 @@ public class Database {
 		try {
 			s = connection.createStatement();
 			ResultSet rs;
-			
+
 			rs = s.executeQuery(sql);
 			return rs;
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
-	 * SQL queries that changes the database. Eg. CREATE TABLE, INSERT, UPDATE, DELETE.
+	 * SQL queries that changes the database. Eg. CREATE TABLE, INSERT, UPDATE,
+	 * DELETE.
 	 * 
 	 * @param sql
 	 * @throws SQLException
@@ -78,11 +80,11 @@ public class Database {
 		try {
 			s = connection.createStatement();
 			s.executeUpdate(sql);
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * SQL queries that INSERT in the database and return the keys.
 	 * 
@@ -107,7 +109,7 @@ public class Database {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Returns the connection.
 	 * 
@@ -116,5 +118,5 @@ public class Database {
 	public Connection getConnection() {
 		return connection;
 	}
-	
+
 }

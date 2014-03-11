@@ -16,6 +16,7 @@ public class DatabaseConnection {
 
 	/**
 	 * Returns a list of all the employees
+	 * 
 	 * @return
 	 */
 	public ResultSet getEmployees() {
@@ -26,6 +27,7 @@ public class DatabaseConnection {
 
 	/**
 	 * Returns all notifications for the logged in user
+	 * 
 	 * @param e
 	 * @return
 	 */
@@ -36,11 +38,11 @@ public class DatabaseConnection {
 
 		return db.readQuery(qry);
 	}
-	
+
 	public ResultSet getAppmnts(Employee e) {
 		String qry = "SELECT appointmentID, date, starttime FROM appointment a "
 				+ "WHERE a.owner = '" + e.getEmail() + "';";
-		
+
 		return db.readQuery(qry);
 	}
 
@@ -66,12 +68,10 @@ public class DatabaseConnection {
 				+ appmnt.getDescription()
 				+ "', '"
 				+ appmnt.getLocation()
-				+ "', '"
-				+ e.getEmail()
-				+ "');";
-		
+				+ "', '" + e.getEmail() + "');";
+
 		db.updateQuery(qry);
-		
+
 		return true;
 	}
 
@@ -87,11 +87,10 @@ public class DatabaseConnection {
 	public boolean hasAppointment(String email, int appmntkey, int participates) {
 
 		String qry = "INSERT INTO appointment_has_employee VALUES ('"
-				+ appmntkey + "', '" + email + "', '"
-				+ participates + "');";
+				+ appmntkey + "', '" + email + "', '" + participates + "');";
 
 		db.updateQuery(qry);
-		
+
 		return true;
 	}
 
@@ -111,7 +110,9 @@ public class DatabaseConnection {
 		try {
 			if (result.next()) {
 				String email = result.getString("email");
-				loggedInAs = new Employee(email, username, pw);
+				loggedInAs.setEmail(email);
+				loggedInAs.setUsername(username);
+				loggedInAs.setPassword(pw);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
