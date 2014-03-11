@@ -26,7 +26,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	private static JPanel responsePane;
 	private static JLabel responseLabel;
 	
-	private static DatabaseConnection db;
+	protected static DatabaseConnection db;
 	private static Employee loggedInAs;
 	
 	public MainFrame() {
@@ -51,7 +51,12 @@ public class MainFrame extends JFrame implements ActionListener {
 		db = new DatabaseConnection();
 		loginPane = new LoginPane();
 		menuPane = new MenuPane();
-		newAppmntPane = new NewAppmntPane();
+		try {
+			newAppmntPane = new NewAppmntPane();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		changeAppmntPane = new ChangeAppmntPane();
 		responseLabel = new JLabel();
 		responsePane = new JPanel();

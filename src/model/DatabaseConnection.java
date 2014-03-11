@@ -14,6 +14,12 @@ public class DatabaseConnection {
 		db = new Database();
 	}
 	
+	public ResultSet getEmployees() {
+		String qry = "SELECT * FROM employee";
+		
+		return db.readQuery(qry);
+	}
+	
 	/**
 	 * Puts the appointment in the database, and calls function to put the relation in the database.
 	 * 
@@ -29,7 +35,7 @@ public class DatabaseConnection {
 		
 		ArrayList<Integer> keys = db.insertAndGetKeysQuery(qry);
 		
-		hasAppointment(empl.getEmail(), keys.get(0), true, true);
+		hasAppointment(empl.getEmail(), keys.get(0), 1, 1);
 		
 		return true;
 	}
@@ -43,7 +49,7 @@ public class DatabaseConnection {
 	 * @param participates
 	 * @return boolean
 	 */
-	public boolean hasAppointment(String email, int appmntkey, boolean owner, boolean participates) {
+	public boolean hasAppointment(String email, int appmntkey, int owner, int participates) {
 		
 		String qry = "INSERT INTO appointment_has_employee VALUES ('" + appmntkey + "', '" + email + "', '"
 				+ owner + "', '" + participates + "');";
