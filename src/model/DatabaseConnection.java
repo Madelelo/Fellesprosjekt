@@ -14,12 +14,21 @@ public class DatabaseConnection {
 		db = new Database();
 	}
 
+	/**
+	 * Returns a list of all the employees
+	 * @return
+	 */
 	public ResultSet getEmployees() {
 		String qry = "SELECT * FROM employee";
 
 		return db.readQuery(qry);
 	}
 
+	/**
+	 * Returns all notifications for the logged in user
+	 * @param e
+	 * @return
+	 */
 	public ResultSet getAlarms(Employee e) {
 		String qry = "SELECT message FROM notification N, appointment_has_employee A, employee E "
 				+ "WHERE N.appointment_appointmentID = A.appoinment_appointmentID"
