@@ -29,6 +29,15 @@ public class Appointment {
 		setDescription(description);
 	}
 	
+	public Appointment(int id, int date, int starttime, int endtime, String location, String description) {
+		appID = id;
+		setDate(date);
+		setStarttime(starttime);
+		setEndtime(endtime);
+		setLocation(location);
+		setDescription(description);
+	}
+	
 	public void setDate(int date) {
 		this.date = date;
 	}

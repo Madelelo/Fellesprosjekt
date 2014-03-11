@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -26,7 +27,5 @@ public class MenuPane extends JPanel {
 		add(weekBtn);
 		add(alarmBtn);
 		add(logoutBtn);
-		
 	}
-
 }

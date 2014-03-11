@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -36,6 +37,9 @@ public class ChangeAppmntPane extends JPanel {
 		description = new JTextField();
 		inviteBtn = new JButton("Inviter til avtale");
 		saveAppmntBtn = new JButton("Lagre avtale");
+	}
+	
+	public void setup() throws SQLException {
 		
 		DefaultListModel listModel = new DefaultListModel();
 		ResultSet employees = MainFrame.db.getEmployees();
@@ -50,9 +54,9 @@ public class ChangeAppmntPane extends JPanel {
 		JScrollPane listScroller = new JScrollPane(employeeList);
 		
 		listModel = new DefaultListModel();
-		ResultSet appmnts = MainFrame.db.getEmployees();
+		ResultSet appmnts = MainFrame.db.getAppmnts(MainFrame.loggedInAs);
 		while(appmnts.next()) {
-			String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ".";
+			String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
 			listModel.addElement(avtale);
 		}
 		
@@ -79,6 +83,5 @@ public class ChangeAppmntPane extends JPanel {
 		add(pane, BorderLayout.CENTER);
 		add(employeeList, BorderLayout.SOUTH);
 		add(inviteBtn, BorderLayout.EAST);
-
 	}
 }

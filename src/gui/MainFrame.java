@@ -51,16 +51,11 @@ public class MainFrame extends JFrame implements ActionListener {
 		db = new DatabaseConnection();
 		loginPane = new LoginPane();
 		menuPane = new MenuPane();
-		try {
-			newAppmntPane = new NewAppmntPane();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		newAppmntPane = new NewAppmntPane();
+		
 		try {
 			changeAppmntPane = new ChangeAppmntPane();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		responseLabel = new JLabel();
@@ -100,7 +95,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	 * Executes the main session of the program.
 	 */
 	public void programSession() {
-		add(menuPane, BorderLayout.NORTH);
+		add(menuPane, BorderLayout.WEST);
 	}
 	
 	public void addResponsePane() {
@@ -129,8 +124,8 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if(e.getActionCommand().equals("Ny avtale")) {
-			remove(menuPane);
-			add(newAppmntPane, BorderLayout.NORTH);
+			newAppmntPane.setup();
+			add(newAppmntPane, BorderLayout.EAST);
 		}
 		
 		else if(e.getActionCommand().equals("Opprett avtale")) {
@@ -147,12 +142,16 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 			
 			remove(newAppmntPane);
-			add(menuPane, BorderLayout.NORTH);
 		}
 		
 		else if(e.getActionCommand().equals("Endre avtale")) {
-			remove(menuPane);
-			add(changeAppmntPane, BorderLayout.NORTH);
+
+			try {
+				changeAppmntPane.setup();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			add(changeAppmntPane, BorderLayout.EAST);
 		}
 		
 		else if(e.getActionCommand().equals("Vis ukekalender")) {

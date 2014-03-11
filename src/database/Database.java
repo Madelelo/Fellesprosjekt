@@ -15,11 +15,10 @@ public class Database {
 	 */
 
 	private static Connection connection = null;
-	private static String connectionURL = "jdbc:mysql://localhost:3306/fellesprosjekt";
+	private static String connectionURL = "jdbc:mysql://mysql.stud.ntnu.no/erlingsp_fp";
 	private static Statement stat = null;
-	private static String user = "root";
-	private static String pw = "fellesprosjekt";
-	private static String database = "fellesprosjekt";
+	private static String user = "erlingsp";
+	private static String pw = "lampe";
 	
 	/**
 	 * Connects to the database.

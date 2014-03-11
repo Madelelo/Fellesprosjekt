@@ -23,8 +23,15 @@ public class DatabaseConnection {
 	public ResultSet getAlarms(Employee e) {
 		String qry = "SELECT message FROM notification N, appointment_has_employee A, employee E "
 				+ "WHERE N.appointment_appointmentID = A.appoinment_appointmentID"
-				+ " AND A.employee = " + e.getEmail();
+				+ " AND A.employee = " + e.getEmail() + ";";
 
+		return db.readQuery(qry);
+	}
+	
+	public ResultSet getAppmnts(Employee e) {
+		String qry = "SELECT appointmentID, date, starttime FROM appointment a "
+				+ "WHERE a.owner = '" + e.getEmail() + "';";
+		
 		return db.readQuery(qry);
 	}
 
@@ -36,9 +43,9 @@ public class DatabaseConnection {
 	 * @param empl
 	 * @return boolean
 	 */
-	public boolean createAppointment(Appointment appmnt, Employee empl) {
+	public boolean createAppointment(Appointment appmnt, Employee e) {
 
-		String qry = "INSERT INTO appointment (date, starttime, endtime, duration, location, description) VALUES ('"
+		String qry = "INSERT INTO appointment (date, starttime, endtime, duration, description, meetingroom, owner) VALUES ('"
 				+ appmnt.getDate()
 				+ "', '"
 				+ appmnt.getStarttime()
@@ -47,15 +54,15 @@ public class DatabaseConnection {
 				+ "', '"
 				+ appmnt.getDuration()
 				+ "', '"
+				+ appmnt.getDescription()
+				+ "', '"
 				+ appmnt.getLocation()
 				+ "', '"
-				+ appmnt.getDescription()
+				+ e.getEmail()
 				+ "');";
-
-		ArrayList<Integer> keys = db.insertAndGetKeysQuery(qry);
-
-		hasAppointment(empl.getEmail(), keys.get(0), 1, 1);
-
+		
+		db.updateQuery(qry);
+		
 		return true;
 	}
 
@@ -68,14 +75,14 @@ public class DatabaseConnection {
 	 * @param participates
 	 * @return boolean
 	 */
-	public boolean hasAppointment(String email, int appmntkey, int owner,
-			int participates) {
+	public boolean hasAppointment(String email, int appmntkey, int participates) {
 
 		String qry = "INSERT INTO appointment_has_employee VALUES ('"
-				+ appmntkey + "', '" + email + "', '" + owner + "', '"
+				+ appmntkey + "', '" + email + "', '"
 				+ participates + "');";
 
 		db.updateQuery(qry);
+		
 		return true;
 	}
 
@@ -112,7 +119,7 @@ public class DatabaseConnection {
 	public boolean isConnected() {
 		boolean connected = false;
 		try {
-			if (db.getConnection().isValid(3)) {
+			if (db.getConnection().isValid(1)) {
 				connected = true;
 			}
 		} catch (SQLException e) {
@@ -121,4 +128,5 @@ public class DatabaseConnection {
 
 		return connected;
 	}
+
 }
