@@ -24,6 +24,14 @@ public class DatabaseConnection {
 
 		return db.readQuery(qry);
 	}
+	
+	public ResultSet getInvitedEmployees(int appmntID) {
+		return null;
+	}
+	
+	public ResultSet getUninvitedEmployees(int appmntID) {
+		return null;
+	}
 
 	/**
 	 * Returns all notifications for the logged in user
@@ -34,15 +42,21 @@ public class DatabaseConnection {
 	public ResultSet getAlarms(Employee e) {
 		String qry = "SELECT message FROM notification N, appointment_has_employee A, employee E "
 				+ "WHERE N.appointment_appointmentID = A.appoinment_appointmentID"
-				+ " AND A.employee = " + e.getEmail() + ";";
+				+ " AND A.employee = '" + e.getEmail() + "';";
 
 		return db.readQuery(qry);
 	}
 
-	public ResultSet getAppmnts(Employee e) {
+	public ResultSet getAppointmentsBy(Employee e) {
 		String qry = "SELECT appointmentID, date, starttime FROM appointment a "
 				+ "WHERE a.owner = '" + e.getEmail() + "';";
 
+		return db.readQuery(qry);
+	}
+	
+	public ResultSet getAppointment(int appmntID) {
+		String qry = "SELECT * FROM appointment a WHERE a.appointmentID = " + appmntID + ";";
+		
 		return db.readQuery(qry);
 	}
 

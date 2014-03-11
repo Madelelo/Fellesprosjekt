@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
@@ -75,6 +76,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
 		ChangeAppmntPane.inviteBtn.addActionListener(this);
 		ChangeAppmntPane.saveAppmntBtn.addActionListener(this);
+		ChangeAppmntPane.chooseAppmntBtn.addActionListener(this);
 	}
 
 	/**
@@ -138,8 +140,9 @@ public class MainFrame extends JFrame implements ActionListener {
 			int start = Integer.parseInt(NewAppmntPane.starttime.getText());
 			int end = Integer.parseInt(NewAppmntPane.endtime.getText());
 			int date = Integer.parseInt(NewAppmntPane.date.getText());
-			String loc = NewAppmntPane.location.getText();
+			double dur = Double.parseDouble(NewAppmntPane.duration.getText());
 			String desc = NewAppmntPane.description.getText();
+			String loc = NewAppmntPane.location.getText();
 
 			if (db.createAppointment(new Appointment(date, start, end, loc,
 					desc), loggedInAs)) {
@@ -155,8 +158,33 @@ public class MainFrame extends JFrame implements ActionListener {
 			clear();
 			add(changeAppmntPane, BorderLayout.CENTER);
 		}
+		
+		else if (e.getActionCommand().equals("Velg avtale")) {
+			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
+			int appmntID = Integer.parseInt(Character.toString(appmnt.charAt(appmnt.length() - 1)));
+			ResultSet appmntSet = db.getAppointment(appmntID);
+			
+			try {
+				changeAppmntPane.putValues(appmntSet);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		else if (e.getActionCommand().equals("Lagre avtale")) {
+			clear();
+		}
+		
+		else if (e.getActionCommand().equals("Inviter til avtale")) {
+			
+		}
 
 		else if (e.getActionCommand().equals("Vis ukekalender")) {
+			clear();
+		}
+		
+		else if (e.getActionCommand().equals("Se varsler")) {
 			clear();
 		}
 
