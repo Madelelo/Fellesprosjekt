@@ -91,25 +91,25 @@ public class ChangeAppmntPane extends JPanel {
 		appmnt.next();
 		int appmntID = appmnt.getInt(1);
 		
-		DefaultListModel<String> listModel = new DefaultListModel<String>();
-		ResultSet invited = MainFrame.db.getInvitedEmployees(appmntID);
-		while(invited.next()) {
-			String ansatt = invited.getString(2);
-			listModel.addElement(ansatt);
-		}
-		invitedList = new JList<String>(listModel);
-		invitedList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		invitedList.setLayoutOrientation(JList.VERTICAL);
-		
-		listModel = new DefaultListModel<String>();
-		ResultSet notInvited = MainFrame.db.getUninvitedEmployees(appmntID);
-		while(notInvited.next()) {
-			String ansatt = notInvited.getString(2);
-			listModel.addElement(ansatt);
-		}
-		notInvitedList = new JList<String>(listModel);
-		notInvitedList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		notInvitedList.setLayoutOrientation(JList.VERTICAL);
+//		DefaultListModel<String> listModel = new DefaultListModel<String>();
+//		ResultSet invited = MainFrame.db.getInvitedEmployees(appmntID);
+//		while(invited.next()) {
+//			String ansatt = invited.getString(2);
+//			listModel.addElement(ansatt);
+//		}
+//		invitedList = new JList<String>(listModel);
+//		invitedList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+//		invitedList.setLayoutOrientation(JList.VERTICAL);
+//		
+//		listModel = new DefaultListModel<String>();
+//		ResultSet notInvited = MainFrame.db.getUninvitedEmployees(appmntID);
+//		while(notInvited.next()) {
+//			String ansatt = notInvited.getString(2);
+//			listModel.addElement(ansatt);
+//		}
+//		notInvitedList = new JList<String>(listModel);
+//		notInvitedList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+//		notInvitedList.setLayoutOrientation(JList.VERTICAL);
 		
 		date.setText(appmnt.getDate(2).toString());
 		starttime.setText(appmnt.getTime(3).toString());
@@ -118,8 +118,8 @@ public class ChangeAppmntPane extends JPanel {
 		description.setText(appmnt.getString(6).toString());
 		location.setText(appmnt.getString(7).toString());
 		
-		bottomPane.add(invitedList);
-		bottomPane.add(notInvitedList);
+//		bottomPane.add(invitedList);
+//		bottomPane.add(notInvitedList);
 		bottomPane.add(inviteBtn);
 	}
 }

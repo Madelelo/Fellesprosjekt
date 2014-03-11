@@ -37,13 +37,13 @@ public class NewAppmntPane extends JPanel {
 	}
 	
 	public void setup() {
-		setLayout(new GridLayout(6, 1));
+		setLayout(new GridLayout(7, 2));
 		
 		add(new JLabel("Dato (YYYY-MM-DD):"));
 		add(date);
 		add(new JLabel("Starttidspunkt (HH:MM:SS):"));
 		add(starttime);
-		add(new JLabel("Slutttidspunkt (HHM:M:SS):"));
+		add(new JLabel("Slutttidspunkt (HH:MM:SS):"));
 		add(endtime);
 		add(new JLabel("[Eller] Lengde (H.M):"));
 		add(duration);
