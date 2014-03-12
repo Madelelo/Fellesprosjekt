@@ -12,6 +12,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import model.*;
 
+/**
+ * 
+ * JFrame that holds all the graphics of the program.
+ *
+ */
 public class MainFrame extends JFrame implements ActionListener {
 
 	private static LoginPane loginPane;
@@ -24,6 +29,9 @@ public class MainFrame extends JFrame implements ActionListener {
 	protected static DatabaseConnection db;
 	protected static Employee loggedInAs;
 
+	/**
+	 * Constructs the JFrame and sets its attributes.
+	 */
 	public MainFrame() {
 		super("Avtalekalender");
 		setSize(800, 800);
@@ -88,11 +96,11 @@ public class MainFrame extends JFrame implements ActionListener {
 
 	/**
 	 * Executes the main session of the program.
-	 * @throws SQLException 
 	 */
 	public void programSession() {
 		add(menuPane, BorderLayout.WEST);
 		newAppmntPane.setup();
+		
 		try {
 			changeAppmntPane.setup();
 		} catch (SQLException e) {
@@ -100,18 +108,27 @@ public class MainFrame extends JFrame implements ActionListener {
 			e.printStackTrace();
 		}
 	}
-
+	
+	/**
+	 * Adds a JPanel at the bottom where messages to the user is displayed.
+	 */
 	public void addResponsePane() {
 		responsePane.setLayout(new FlowLayout());
 		responsePane.add(responseLabel);
 		add(responsePane, BorderLayout.SOUTH);
 	}
 	
+	/**
+	 * Clears the JFrame for JPanels to avoid adding them multiple times.
+	 */
 	public void clear() {
 		remove(newAppmntPane);
 		remove(changeAppmntPane);
 	}
-
+	
+	/**
+	 * Method that handles all the things that should happen when buttons is pressed.
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 

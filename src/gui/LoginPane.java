@@ -7,6 +7,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * 
+ * JPanel with GUI for logging in.
+ *
+ */
 public class LoginPane extends JPanel {
 	
 	protected static JTextField usernameField;

@@ -14,6 +14,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
+
+/**
+ * 
+ * JPanel with GUI for making a new appointment.
+ *
+ */
 public class NewAppmntPane extends JPanel {
 
 	protected static JTextField date;

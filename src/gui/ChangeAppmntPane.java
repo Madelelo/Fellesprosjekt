@@ -15,6 +15,11 @@ import javax.swing.ListSelectionModel;
 
 import sun.swing.MenuItemLayoutHelper.ColumnAlignment;
 
+/**
+ * 
+ * JPanel with GUI for changing appointments.
+ *
+ */
 public class ChangeAppmntPane extends JPanel {
 	
 	protected static JTextField date;

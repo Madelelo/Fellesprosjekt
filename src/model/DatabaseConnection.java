@@ -15,9 +15,9 @@ public class DatabaseConnection {
 	}
 
 	/**
-	 * Returns a list of all the employees
+	 * Returns a ResultSet with all the employees
 	 * 
-	 * @return
+	 * @return ResultSet
 	 */
 	public ResultSet getEmployees() {
 		String qry = "SELECT * FROM employee";
@@ -25,28 +25,65 @@ public class DatabaseConnection {
 		return db.readQuery(qry);
 	}
 	
+	/**
+	 * Returns a ResultSet with all the employees invited to an appointment.
+	 * 
+	 * @param appmntID
+	 * @return ResultSet
+	 */
 	public ResultSet getInvitedEmployees(int appmntID) {
+		
+		//Må implementeres.
+		
 		return null;
 	}
 	
+	/**
+	 * Returns a ResultSet with all the employees NOT invited to an appointment.
+	 * 
+	 * @param appmntID
+	 * @return ResultSet
+	 */
 	public ResultSet getUninvitedEmployees(int appmntID) {
+		
+		//Må implementeres.
+		
 		return null;
 	}
 
 	/**
-	 * Returns all notifications for the logged in user
+	 * Returns a ResultSet with all the notifications for the logged in user.
 	 * 
 	 * @param e
 	 * @return
 	 */
-	public ResultSet getAlarms(Employee e) {
+	public ResultSet getNotifications(Employee e) {
 		String qry = "SELECT message FROM notification N, appointment_has_employee A, employee E "
 				+ "WHERE N.appointment_appointmentID = A.appoinment_appointmentID"
 				+ " AND A.employee = '" + e.getEmail() + "';";
 
 		return db.readQuery(qry);
 	}
-
+	
+	/**
+	 * Returns a ResultSet with all the alarms for the logged in user.
+	 * 
+	 * @param e
+	 * @return ResultSet
+	 */
+	public ResultSet getAlarms(Employee e) {
+		
+		//Må implementeres.
+		
+		return null;
+	}
+	
+	/**
+	 * Returns a ResultSet with all appointments made by specific employee.
+	 * 
+	 * @param e
+	 * @return ResultSet
+	 */
 	public ResultSet getAppointmentsBy(Employee e) {
 		String qry = "SELECT appointmentID, date, starttime FROM appointment a "
 				+ "WHERE a.owner = '" + e.getEmail() + "';";
@@ -54,6 +91,12 @@ public class DatabaseConnection {
 		return db.readQuery(qry);
 	}
 	
+	/**
+	 * Returns a ResultSet with the appointment with the given appointmentID.
+	 * 
+	 * @param appmntID
+	 * @return ResultSet
+	 */
 	public ResultSet getAppointment(int appmntID) {
 		String qry = "SELECT * FROM appointment a WHERE a.appointmentID = " + appmntID + ";";
 		
@@ -61,8 +104,7 @@ public class DatabaseConnection {
 	}
 
 	/**
-	 * Puts the appointment in the database, and calls function to put the
-	 * relation in the database.
+	 * Inserts new appointment into the database.
 	 * 
 	 * @param appmnt
 	 * @param empl
@@ -90,21 +132,34 @@ public class DatabaseConnection {
 	}
 
 	/**
-	 * Puts the relation between employee and appointment in the database.
+	 * Invites an employee to an given appointment. 
 	 * 
 	 * @param email
 	 * @param appmntkey
-	 * @param owner
 	 * @param participates
 	 * @return boolean
 	 */
-	public boolean hasAppointment(String email, int appmntkey, int participates) {
+	public boolean inviteTo(String email, int appmntID, int participates) {
 
-		String qry = "INSERT INTO appointment_has_employee VALUES ('"
-				+ appmntkey + "', '" + email + "', '" + participates + "');";
+		String qry = "INSERT INTO invited_to VALUES ('"
+				+ appmntID + "', '" + email + "', '" + participates + "');";
 
 		db.updateQuery(qry);
 
+		return true;
+	}
+	
+	/**
+	 * Updates the status of the invitation so that the employee is participating.
+	 * 
+	 * @param email
+	 * @param appmntID
+	 * @return boolean
+	 */
+	public boolean confirmInvitation(String email, int appmntID) {
+		
+		//Må implementeres.
+		
 		return true;
 	}
 

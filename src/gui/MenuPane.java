@@ -6,6 +6,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+/**
+ * 
+ * JPanel with GUI for the program menu.
+ *
+ */
 public class MenuPane extends JPanel {
 	
 	protected static JButton newAppmntBtn;
