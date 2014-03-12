@@ -5,10 +5,10 @@ import java.util.List;
 public class Appointment {
 
 	private int appID;
-	private int date;
-	private int starttime;
-	private int endtime;
-	private double duration;
+	private String date;
+	private String starttime;
+	private String endtime;
+	private String duration;
 	private String location;
 	private String description;
 	public List<Employee> participants;
@@ -21,15 +21,16 @@ public class Appointment {
 	 * @param location
 	 * @param description
 	 */
-	public Appointment(int date, int starttime, int endtime, String location, String description) {
+	public Appointment(String date, String starttime, String endtime, String duration, String location, String description) {
 		setDate(date);
 		setStarttime(starttime);
 		setEndtime(endtime);
+		setDuration(duration);
 		setLocation(location);
 		setDescription(description);
 	}
 	
-	public Appointment(int id, int date, int starttime, int endtime, String location, String description) {
+	public Appointment(int id, String date, String starttime, String endtime, String location, String description) {
 		appID = id;
 		setDate(date);
 		setStarttime(starttime);
@@ -38,11 +39,11 @@ public class Appointment {
 		setDescription(description);
 	}
 	
-	public void setDate(int date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 	
-	public int getDate() {
+	public String getDate() {
 		return date;
 	}
 
@@ -51,11 +52,11 @@ public class Appointment {
 	 * 
 	 * @param time
 	 */
-	public void setStarttime(int time) {
+	public void setStarttime(String time) {
 		starttime = time;
 	}
 	
-	public int getStarttime() {
+	public String getStarttime() {
 		return starttime;
 	}
 
@@ -64,11 +65,11 @@ public class Appointment {
 	 * 
 	 * @param time
 	 */
-	public void setEndtime(int time) {
+	public void setEndtime(String time) {
 		endtime = time;
 	}
 	
-	public int getEndtime() {
+	public String getEndtime() {
 		return endtime;
 	}
 
@@ -77,11 +78,11 @@ public class Appointment {
 	 * 
 	 * @param dur
 	 */
-	public void setDuration(double dur) {
+	public void setDuration(String dur) {
 		duration = dur;
 	}
 	
-	public double getDuration() {
+	public String getDuration() {
 		return duration;
 	}
 	

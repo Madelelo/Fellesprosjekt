@@ -23,6 +23,9 @@ public class MainFrame extends JFrame implements ActionListener {
 	private static MenuPane menuPane;
 	private static NewAppmntPane newAppmntPane;
 	private static ChangeAppmntPane changeAppmntPane;
+	private static InvitationPane invitationPane;
+	private static NotificationPane notificationPane;
+	
 	private static JPanel responsePane;
 	private static JLabel responseLabel;
 
@@ -34,7 +37,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	 */
 	public MainFrame() {
 		super("Avtalekalender");
-		setSize(800, 800);
+		setSize(800, 500);
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -55,12 +58,10 @@ public class MainFrame extends JFrame implements ActionListener {
 		loginPane = new LoginPane();
 		menuPane = new MenuPane();
 		newAppmntPane = new NewAppmntPane();
-
-		try {
-			changeAppmntPane = new ChangeAppmntPane();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		changeAppmntPane = new ChangeAppmntPane();
+		invitationPane = new InvitationPane();
+		notificationPane = new NotificationPane();
+		
 		responseLabel = new JLabel();
 		responsePane = new JPanel();
 
@@ -78,12 +79,15 @@ public class MainFrame extends JFrame implements ActionListener {
 		MenuPane.logoutBtn.addActionListener(this);
 		MenuPane.newAppmntBtn.addActionListener(this);
 		MenuPane.changeAppmntBtn.addActionListener(this);
+		MenuPane.invitationBtn.addActionListener(this);
 		MenuPane.weekBtn.addActionListener(this);
+		MenuPane.alarmBtn.addActionListener(this);
 
 		NewAppmntPane.newAppmntBtn.addActionListener(this);
 
 		ChangeAppmntPane.inviteBtn.addActionListener(this);
 		ChangeAppmntPane.saveAppmntBtn.addActionListener(this);
+		ChangeAppmntPane.deleteAppmntBtn.addActionListener(this);
 		ChangeAppmntPane.chooseAppmntBtn.addActionListener(this);
 	}
 
@@ -103,6 +107,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		try {
 			changeAppmntPane.setup();
+			invitationPane.setup();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -124,6 +129,8 @@ public class MainFrame extends JFrame implements ActionListener {
 	public void clear() {
 		remove(newAppmntPane);
 		remove(changeAppmntPane);
+		remove(invitationPane);
+		remove(notificationPane);
 	}
 	
 	/**
@@ -143,9 +150,9 @@ public class MainFrame extends JFrame implements ActionListener {
 				programSession();
 			} else {
 				responseLabel.setText("Feil brukernavn eller passord.");
-				LoginPane.usernameField.setText("");
-				LoginPane.pwField.setText("");
 			}
+			LoginPane.usernameField.setText("");
+			LoginPane.pwField.setText("");
 		}
 
 		else if (e.getActionCommand().equals("Ny avtale")) {
@@ -154,25 +161,32 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 
 		else if (e.getActionCommand().equals("Opprett avtale")) {
-			int start = Integer.parseInt(NewAppmntPane.starttime.getText());
-			int end = Integer.parseInt(NewAppmntPane.endtime.getText());
-			int date = Integer.parseInt(NewAppmntPane.date.getText());
-			double dur = Double.parseDouble(NewAppmntPane.duration.getText());
+			String start = NewAppmntPane.starttime.getText();
+			String end = NewAppmntPane.endtime.getText();
+			String date = NewAppmntPane.date.getText();
+			String dur = NewAppmntPane.duration.getText();
 			String desc = NewAppmntPane.description.getText();
 			String loc = NewAppmntPane.location.getText();
 
-			if (db.createAppointment(new Appointment(date, start, end, loc,
+			if (db.createAppointment(new Appointment(date, start, end, dur, loc,
 					desc), loggedInAs)) {
 				responseLabel.setText("Avtale lagt til.");
 			} else {
 				responseLabel.setText("Kunne ikke legge til avtale.");
 			}
-
+			
+			newAppmntPane.clearValues();
 			clear();
 		}
 
 		else if (e.getActionCommand().equals("Endre avtale")) {
 			clear();
+			try {
+				changeAppmntPane.refresh();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			add(changeAppmntPane, BorderLayout.CENTER);
 		}
 		
@@ -189,12 +203,34 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 		
+		else if (e.getActionCommand().equals("Slett avtale")) {
+			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
+			int appmntID = Integer.parseInt(Character.toString(appmnt.charAt(appmnt.length() - 1)));
+			
+			db.deleteAppointment(appmntID);
+			changeAppmntPane.clearValues();
+		}
+		
 		else if (e.getActionCommand().equals("Lagre avtale")) {
 			clear();
 		}
 		
 		else if (e.getActionCommand().equals("Inviter til avtale")) {
 			
+		}
+		
+		else if (e.getActionCommand().equals("Invitasjoner")) {
+			clear();
+			add(invitationPane, BorderLayout.CENTER);
+			
+		}
+		
+		else if (e.getActionCommand().equals("Godta")) {
+			
+		}
+		
+		else if (e.getActionCommand().equals("Avslå")) {
+	
 		}
 
 		else if (e.getActionCommand().equals("Vis ukekalender")) {
@@ -203,6 +239,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		else if (e.getActionCommand().equals("Se varsler")) {
 			clear();
+			add(notificationPane, BorderLayout.CENTER);
 		}
 
 		else if (e.getActionCommand().equals("Logg ut")) {
@@ -211,6 +248,8 @@ public class MainFrame extends JFrame implements ActionListener {
 			remove(menuPane);
 			loginSession();
 		}
+		
+		repaint();
 
 	}
 

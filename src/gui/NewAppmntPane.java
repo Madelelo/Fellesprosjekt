@@ -29,7 +29,6 @@ public class NewAppmntPane extends JPanel {
 	protected static JTextField location;
 	protected static JTextField description;
 	protected static JButton newAppmntBtn;
-	protected static JButton inviteBtn;
 	
 	public NewAppmntPane() {
 		date = new JTextField();
@@ -39,7 +38,6 @@ public class NewAppmntPane extends JPanel {
 		location = new JTextField();
 		description = new JTextField();
 		newAppmntBtn = new JButton("Opprett avtale");
-		inviteBtn = new JButton("Inviter ansatte");
 	}
 	
 	public void setup() {
@@ -58,6 +56,15 @@ public class NewAppmntPane extends JPanel {
 		add(new JLabel("Sted:"));
 		add(location);
 		add(newAppmntBtn);
+	}
+	
+	public void clearValues() {
+		date.setText("");
+		starttime.setText("");
+		endtime.setText("");
+		duration.setText("");
+		location.setText("");
+		description.setText("");
 	}
 
 }

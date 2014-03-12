@@ -31,6 +31,7 @@ public class ChangeAppmntPane extends JPanel {
 	protected static JButton chooseAppmntBtn;
 	protected static JButton inviteBtn;
 	protected static JButton saveAppmntBtn;
+	protected static JButton deleteAppmntBtn;
 	protected static JPanel topPane;
 	protected static JPanel midPane;
 	protected static JPanel bottomPane;
@@ -38,7 +39,7 @@ public class ChangeAppmntPane extends JPanel {
 	protected static JList<String> notInvitedList;
 	protected static JList<String> appmntList;
 	
-	public ChangeAppmntPane() throws SQLException {
+	public ChangeAppmntPane() {
 		topPane = new JPanel();
 		midPane = new JPanel();
 		bottomPane = new JPanel();
@@ -51,12 +52,14 @@ public class ChangeAppmntPane extends JPanel {
 		chooseAppmntBtn = new JButton("Velg avtale");
 		inviteBtn = new JButton("Inviter til avtale");
 		saveAppmntBtn = new JButton("Lagre avtale");
+		deleteAppmntBtn = new JButton("Slett avtale");
 	}
 	
 	public void setup() throws SQLException {
 		
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		ResultSet appmnts = MainFrame.db.getAppointmentsBy(MainFrame.loggedInAs);
+		System.out.println(MainFrame.loggedInAs.getEmail());
 		while(appmnts.next()) {
 			String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
 			listModel.addElement(avtale);
@@ -85,6 +88,7 @@ public class ChangeAppmntPane extends JPanel {
 		midPane.add(location);
 		midPane.add(new JLabel("Beskrivelse:"));
 		midPane.add(description);
+		midPane.add(deleteAppmntBtn);
 		midPane.add(saveAppmntBtn);
 		
 		add(topPane, BorderLayout.NORTH);
@@ -126,5 +130,25 @@ public class ChangeAppmntPane extends JPanel {
 //		bottomPane.add(invitedList);
 //		bottomPane.add(notInvitedList);
 		bottomPane.add(inviteBtn);
+	}
+	
+	public void clearValues() {
+		date.setText("");
+		starttime.setText("");
+		endtime.setText("");
+		duration.setText("");
+		description.setText("");
+		location.setText("");
+	}
+	
+	public void refresh() throws SQLException {
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		ResultSet appmnts = MainFrame.db.getAppointmentsBy(MainFrame.loggedInAs);
+
+		while(appmnts.next()) {
+			String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
+			listModel.addElement(avtale);
+		}
+		appmntList.setModel(listModel);
 	}
 }

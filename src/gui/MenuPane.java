@@ -15,20 +15,25 @@ public class MenuPane extends JPanel {
 	
 	protected static JButton newAppmntBtn;
 	protected static JButton changeAppmntBtn;
+	protected static JButton invitationBtn;
 	protected static JButton weekBtn;
-	protected static JButton logoutBtn;
 	protected static JButton alarmBtn;
+	protected static JButton logoutBtn;
+	
 	
 	public MenuPane() {
 		newAppmntBtn = new JButton("Ny avtale");
 		changeAppmntBtn = new JButton("Endre avtale");
+		invitationBtn = new JButton("Invitasjoner");
 		weekBtn = new JButton("Vis ukekalender");
-		logoutBtn = new JButton("Logg ut");
 		alarmBtn = new JButton("Se varsler");
+		logoutBtn = new JButton("Logg ut");
 		
-		setLayout(new GridLayout(5,1));
+		
+		setLayout(new GridLayout(6,1));
 		add(newAppmntBtn);
 		add(changeAppmntBtn);
+		add(invitationBtn);
 		add(weekBtn);
 		add(alarmBtn);
 		add(logoutBtn);

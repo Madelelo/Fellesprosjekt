@@ -50,6 +50,19 @@ public class DatabaseConnection {
 		
 		return null;
 	}
+	
+	/**
+	 * Returns a ResultSet (with appointments) with all unanswered invitations.
+	 * 
+	 * @param e
+	 * @return ResultSet
+	 */
+	public ResultSet getInvitations(Employee e) {
+		
+		//Må implementeres.
+		
+		return null;
+	}
 
 	/**
 	 * Returns a ResultSet with all the notifications for the logged in user.
@@ -128,6 +141,19 @@ public class DatabaseConnection {
 
 		db.updateQuery(qry);
 
+		return true;
+	}
+	
+	/**
+	 * Deletes the appointment from the database,
+	 * 
+	 * @param appmntID
+	 * @return boolean
+	 */
+	public boolean deleteAppointment(int appmntID) {
+		
+		//Må implementeres.
+		
 		return true;
 	}
 
