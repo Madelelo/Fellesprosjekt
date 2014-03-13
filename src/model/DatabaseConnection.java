@@ -72,7 +72,7 @@ public class DatabaseConnection {
 	 */
 	public ResultSet getNotifications(Employee e) {
 		String qry = "SELECT message FROM notification N, invited_to A, employee E "
-				+ "WHERE N.appointment_appointmentID = A.appoinment_appointmentID"
+				+ "WHERE N.appointmentID = A.appointmentID"
 				+ " AND A.employee = '" + e.getEmail() + "';";
 
 		return db.readQuery(qry);
