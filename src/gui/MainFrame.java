@@ -108,7 +108,11 @@ public class MainFrame extends JFrame implements ActionListener {
 		try {
 			changeAppmntPane.setup();
 			invitationPane.setup();
+<<<<<<< HEAD
 			//notificationPane.setup();
+=======
+			notificationPane.setup();
+>>>>>>> Fortsatt NotificationPane
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
