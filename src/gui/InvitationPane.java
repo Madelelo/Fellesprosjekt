@@ -45,5 +45,15 @@ public class InvitationPane extends JPanel {
 		add(declineBtn);
 		
 	}
+	
+	public void refresh() throws SQLException {
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		ResultSet appmnts = MainFrame.db.getInvitations(MainFrame.loggedInAs);
+		while(appmnts.next()) {
+			String avtale = "Avtale: " + appmnts.getString(1) + ", " + appmnts.getString(2);
+			listModel.addElement(avtale);
+		}
+		invitationList = new JList<String>(listModel);
+	}
 
 }
