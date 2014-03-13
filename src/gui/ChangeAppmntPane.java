@@ -111,6 +111,9 @@ public class ChangeAppmntPane extends JPanel {
 		if (invited != null) {	
 			while(invited.next()) {
 				String ansatt = invited.getString(1);
+				if(!invited.getBoolean(2)) {ansatt += " (Ubesvart)";}
+				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Godtatt)";}
+				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Avslått)";}
 				listModel.addElement(ansatt);
 			}
 		}
@@ -175,6 +178,9 @@ public class ChangeAppmntPane extends JPanel {
 		if(invited != null) {
 			while(invited.next()) {
 				String ansatt = invited.getString(1);
+				if(!invited.getBoolean(2)) {ansatt += " (Ubesvart)";}
+				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Godtatt)";}
+				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Avslått)";}
 				listModel.addElement(ansatt);
 			}	
 		}

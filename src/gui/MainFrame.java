@@ -253,7 +253,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if (e.getActionCommand().equals("Fjern fra avtale")) {
-			String email = ChangeAppmntPane.invitedList.getSelectedValue();
+			String email = ChangeAppmntPane.invitedList.getSelectedValue().split(" ")[0];
 			if(email != null) {
 				int appmntID = changeAppmntPane.getCurrenAppmntID();
 				db.removeFrom(email, appmntID);

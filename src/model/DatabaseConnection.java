@@ -33,7 +33,7 @@ public class DatabaseConnection {
 	 */
 	public ResultSet getInvitedEmployees(int appmntID) {
 		
-		String qry = "SELECT e.email FROM employee e, invited_to i "
+		String qry = "SELECT e.email, i.hasanswered, i.isparticipating FROM employee e, invited_to i "
 				+ "WHERE e.email = i.email "
 				+ "AND i.appointmentID = " + appmntID +";";
 		
@@ -48,11 +48,11 @@ public class DatabaseConnection {
 	 */
 	public ResultSet getUninvitedEmployees(int appmntID) {
 
-		String qry = "SELECT E.email FROM employee E "
-				+ "WHERE E.email NOT IN ("
-				+ "SELECT E.email FROM employee E, invited_to A "
-				+ "WHERE E.email = A.email "
-				+ "AND A.appointmentID = " + appmntID + ");";
+		String qry = "SELECT e.email FROM employee e "
+				+ "WHERE e.email NOT IN ("
+				+ "SELECT e.email FROM employee e, invited_to i "
+				+ "WHERE e.email = i.email "
+				+ "AND i.appointmentID = " + appmntID + ");";
 
 		return db.readQuery(qry);
 	}
@@ -137,7 +137,7 @@ public class DatabaseConnection {
 	 * @return boolean
 	 */
 	public boolean createAppointment(Appointment appmnt, Employee e) {
-		boolean success = false;
+		boolean success = true;
 		String qry = "INSERT INTO appointment (date, starttime, endtime, duration, description, meetingroom, owner) VALUES ('"
 				+ appmnt.getDate()
 				+ "', '"
