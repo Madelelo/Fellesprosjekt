@@ -41,6 +41,7 @@ public class NotificationPane extends JPanel {
 			notArea.insert(notifications.getString(1), notifications.getRow());
 		}
 		
+	//Hei <3
 		setLayout(new GridLayout(2, 1));
 		add(notLabel);
 		add(notArea);
