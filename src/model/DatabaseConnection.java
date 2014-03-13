@@ -33,7 +33,7 @@ public class DatabaseConnection {
 	 */
 	public ResultSet getInvitedEmployees(int appmntID) {
 		
-		//Må implementeres.
+		
 		
 		return null;
 	}
@@ -46,9 +46,12 @@ public class DatabaseConnection {
 	 */
 	public ResultSet getUninvitedEmployees(int appmntID) {
 		
-		//Må implementeres.
+		String qry = "SELECT username FROM employee E "
+		+"WHERE E.email NOT IN ("
+		+"SELECT E.email FROM employee E, invited_to A "
+		+"WHERE E.email = A.email)";
 		
-		return null;
+		return db.readQuery(qry);
 	}
 	
 	/**
@@ -187,7 +190,7 @@ public class DatabaseConnection {
 	 */
 	public boolean confirmInvitation(String email, int appmntID) {
 		
-		//Må implementeres.
+		//Må implementeres.hasanswered=1, isparticipating=1
 		
 		return true;
 	}
