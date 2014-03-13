@@ -59,7 +59,10 @@ public class DatabaseConnection {
 	 */
 	public ResultSet getInvitations(Employee e) {
 		
-		//Må implementeres.
+		String qry = "SELECT date, starttime FROM invited_to i, appointment a "
+				+ "WHERE i.email = '" + e.getEmail() + "' "
+				+ "AND i.appointmentID = a.appointmentID "
+				+ "AND i.hasanswered = " + 0 + ";";
 		
 		return null;
 	}
