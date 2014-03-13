@@ -165,10 +165,10 @@ public class DatabaseConnection {
 	 * @param participates
 	 * @return boolean
 	 */
-	public boolean inviteTo(String email, int appmntID, int participates) {
+	public boolean inviteTo(String email, int appmntID) {
 
 		String qry = "INSERT INTO invited_to VALUES ('"
-				+ appmntID + "', '" + email + "', '" + participates + "');";
+				+ appmntID + "', '" + email + "', '0', '0');";
 
 		db.updateQuery(qry);
 
