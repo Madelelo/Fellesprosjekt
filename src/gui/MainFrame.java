@@ -192,7 +192,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		else if (e.getActionCommand().equals("Velg avtale")) {
 			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
-			int appmntID = Integer.parseInt(Character.toString(appmnt.charAt(appmnt.length() - 1)));
+			int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
 			ResultSet appmntSet = db.getAppointment(appmntID);
 			
 			try {
@@ -205,7 +205,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		else if (e.getActionCommand().equals("Slett avtale")) {
 			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
-			int appmntID = Integer.parseInt(Character.toString(appmnt.charAt(appmnt.length() - 1)));
+			int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
 			
 			db.deleteAppointment(appmntID);
 			changeAppmntPane.clearValues();
