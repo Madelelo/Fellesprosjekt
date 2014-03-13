@@ -193,7 +193,7 @@ public class DatabaseConnection {
 	 */
 	public boolean confirmInvitation(String email, int appmntID) {
 		
-		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=1 WHERE appointment = " + appmntID + ";" ;
+		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=1 WHERE appointment = " + appmntID + " AND email = '" + email + "';" ;
 		
 		db.updateQuery(qry);
 		
@@ -208,7 +208,7 @@ public class DatabaseConnection {
 	 */
 	public boolean declineInvitation(String email, int appmntID) {
 		
-		String qry = "UPDATE invited_to SET hasanswered=0, isparticipating=0 WHERE appointment = " + appmntID + ";" ;
+		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=0 WHERE appointment = " + appmntID + " AND email = '" + email + "';" ;
 		
 		db.updateQuery(qry);
 		
