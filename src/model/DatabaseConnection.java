@@ -153,7 +153,9 @@ public class DatabaseConnection {
 	 */
 	public boolean deleteAppointment(int appmntID) {
 		
-		//Må implementeres.
+		String qry = "DELETE FROM appointment WHERE appointmentID = " + appmntID + ";";
+		
+		db.updateQuery(qry);
 		
 		return true;
 	}

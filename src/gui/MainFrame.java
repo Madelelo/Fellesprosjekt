@@ -108,6 +108,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		try {
 			changeAppmntPane.setup();
 			invitationPane.setup();
+			//notificationPane.setup();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -209,6 +210,12 @@ public class MainFrame extends JFrame implements ActionListener {
 			
 			db.deleteAppointment(appmntID);
 			changeAppmntPane.clearValues();
+			try {
+				changeAppmntPane.refresh();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		else if (e.getActionCommand().equals("Lagre avtale")) {
