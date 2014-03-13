@@ -108,6 +108,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		try {
 			changeAppmntPane.setup();
 			invitationPane.setup();
+			//notificationPane.setup();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -209,6 +210,12 @@ public class MainFrame extends JFrame implements ActionListener {
 			
 			db.deleteAppointment(appmntID);
 			changeAppmntPane.clearValues();
+			try {
+				changeAppmntPane.refresh();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		else if (e.getActionCommand().equals("Lagre avtale")) {
@@ -216,6 +223,24 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if (e.getActionCommand().equals("Inviter til avtale")) {
+			String email = ChangeAppmntPane.notInvitedList.getSelectedValue();
+//			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
+//			int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
+			int appmntID = changeAppmntPane.getCurrenAppmntID();
+			
+			db.inviteTo(email, appmntID);
+			try {
+				changeAppmntPane.refresh();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		else if (e.getActionCommand().equals("Fjern fra avtale")) {
+			String email = ChangeAppmntPane.invitedList.getSelectedValue();
+			int appmntID = changeAppmntPane.getCurrenAppmntID();
+			
 			
 		}
 		

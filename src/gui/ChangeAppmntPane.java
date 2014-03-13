@@ -30,6 +30,7 @@ public class ChangeAppmntPane extends JPanel {
 	protected static JTextField description;
 	protected static JButton chooseAppmntBtn;
 	protected static JButton inviteBtn;
+	protected static JButton removeBtn;
 	protected static JButton saveAppmntBtn;
 	protected static JButton deleteAppmntBtn;
 	protected static JPanel topPane;
@@ -38,6 +39,7 @@ public class ChangeAppmntPane extends JPanel {
 	protected static JList<String> invitedList;
 	protected static JList<String> notInvitedList;
 	protected static JList<String> appmntList;
+	private int currentAppmntID;
 	
 	public ChangeAppmntPane() {
 		topPane = new JPanel();
@@ -51,6 +53,7 @@ public class ChangeAppmntPane extends JPanel {
 		description = new JTextField();
 		chooseAppmntBtn = new JButton("Velg avtale");
 		inviteBtn = new JButton("Inviter til avtale");
+		removeBtn = new JButton("Fjern fra avtale");
 		saveAppmntBtn = new JButton("Lagre avtale");
 		deleteAppmntBtn = new JButton("Slett avtale");
 	}
@@ -71,7 +74,7 @@ public class ChangeAppmntPane extends JPanel {
 		setLayout(new BorderLayout());
 		topPane.setLayout(new GridLayout(1, 2));
 		midPane.setLayout(new GridLayout(7, 2));
-		bottomPane.setLayout(new GridLayout(1, 3));
+		bottomPane.setLayout(new GridLayout(2, 2));
 		
 		topPane.add(appmntList);
 		topPane.add(chooseAppmntBtn);
@@ -98,12 +101,12 @@ public class ChangeAppmntPane extends JPanel {
 	
 	public void putValues(ResultSet appmnt) throws SQLException {
 		appmnt.next();
-		int appmntID = appmnt.getInt(1);
+		currentAppmntID = appmnt.getInt(1);
 		
 //		DefaultListModel<String> listModel = new DefaultListModel<String>();
-//		ResultSet invited = MainFrame.db.getInvitedEmployees(appmntID);
+//		ResultSet invited = MainFrame.db.getInvitedEmployees(currentAppmntID);
 //		while(invited.next()) {
-//			String ansatt = invited.getString(2);
+//			String ansatt = invited.getString(1);
 //			listModel.addElement(ansatt);
 //		}
 //		invitedList = new JList<String>(listModel);
@@ -111,9 +114,9 @@ public class ChangeAppmntPane extends JPanel {
 //		invitedList.setLayoutOrientation(JList.VERTICAL);
 //		
 //		listModel = new DefaultListModel<String>();
-//		ResultSet notInvited = MainFrame.db.getUninvitedEmployees(appmntID);
+//		ResultSet notInvited = MainFrame.db.getUninvitedEmployees(currentAppmntID);
 //		while(notInvited.next()) {
-//			String ansatt = notInvited.getString(2);
+//			String ansatt = notInvited.getString(1);
 //			listModel.addElement(ansatt);
 //		}
 //		notInvitedList = new JList<String>(listModel);
@@ -128,8 +131,10 @@ public class ChangeAppmntPane extends JPanel {
 		location.setText(appmnt.getString(7).toString());
 		
 //		bottomPane.add(invitedList);
-//		bottomPane.add(notInvitedList);
 		bottomPane.add(inviteBtn);
+//		bottomPane.add(notInvitedList);
+		bottomPane.add(removeBtn);
+		
 	}
 	
 	public void clearValues() {
@@ -144,11 +149,30 @@ public class ChangeAppmntPane extends JPanel {
 	public void refresh() throws SQLException {
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		ResultSet appmnts = MainFrame.db.getAppointmentsBy(MainFrame.loggedInAs);
-
 		while(appmnts.next()) {
 			String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
 			listModel.addElement(avtale);
 		}
 		appmntList.setModel(listModel);
+		
+		/*listModel = new DefaultListModel<String>();
+		ResultSet invited = MainFrame.db.getInvitedEmployees(currentAppmntID);
+		while(invited.next()) {
+			String ansatt = invited.getString(1);
+			listModel.addElement(ansatt);
+		}
+		invitedList.setModel(listModel);
+		
+		listModel = new DefaultListModel<String>();
+		ResultSet notInvited = MainFrame.db.getUninvitedEmployees(currentAppmntID);
+		while(notInvited.next()) {
+			String ansatt = notInvited.getString(1);
+			listModel.addElement(ansatt);
+		}
+		notInvitedList.setModel(listModel);*/
+	}
+	
+	public int getCurrenAppmntID() {
+		return currentAppmntID;
 	}
 }

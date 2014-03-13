@@ -71,9 +71,9 @@ public class DatabaseConnection {
 	 * @return
 	 */
 	public ResultSet getNotifications(Employee e) {
-		String qry = "SELECT message FROM notification N, appointment_has_employee A, employee E "
-				+ "WHERE N.appointment_appointmentID = A.appoinment_appointmentID"
-				+ " AND A.employee = '" + e.getEmail() + "';";
+		String qry = "SELECT message FROM notification N, invited_to A, employee E "
+				+ "WHERE N.appointmentID = A.appointmentID"
+				+ " AND A.email = '" + e.getEmail() + "';";
 
 		return db.readQuery(qry);
 	}
@@ -85,10 +85,11 @@ public class DatabaseConnection {
 	 * @return ResultSet
 	 */
 	public ResultSet getAlarms(Employee e) {
+		String qry = "SELECT alarmtime FROM notification N, invited_to A, employee E "
+				+ "WHERE N.appointmentID = A.appointmentID"
+				+ "WHERE A.email = '" + e.getEmail() + "';";
 		
-		//Må implementeres.
-		
-		return null;
+		return db.readQuery(qry);
 	}
 	
 	/**
@@ -152,7 +153,9 @@ public class DatabaseConnection {
 	 */
 	public boolean deleteAppointment(int appmntID) {
 		
-		//Må implementeres.
+		String qry = "DELETE FROM appointment WHERE appointmentID = " + appmntID + ";";
+		
+		db.updateQuery(qry);
 		
 		return true;
 	}
