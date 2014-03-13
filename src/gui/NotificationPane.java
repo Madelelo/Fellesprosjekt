@@ -1,5 +1,9 @@
 package gui;
 
+import java.awt.GridLayout;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -20,7 +24,25 @@ public class NotificationPane extends JPanel {
 		
 		notLabel = new JLabel("Varsler");
 		alarmLabel = new JLabel("Alarmer");
+		notArea = new JTextArea();
+		alarmArea = new JTextArea();
 		
+	}
+	
+	public void setup() throws SQLException {
+		ResultSet notifications = MainFrame.db.getNotifications(MainFrame.loggedInAs);
+		int rows = 0;
+		if (notifications.last()){
+			rows = notifications.getRow();
+			notifications.beforeFirst();
+		}
+		notArea = new JTextArea(rows, 1);
+		while (notifications.next()) {
+			notArea.insert(notifications.getString(1), notifications.getRow());
+		}
 		
+		setLayout(new GridLayout(2, 1));
+		add(notLabel);
+		add(notArea);
 	}
 }
