@@ -92,22 +92,18 @@ public class Database {
 	 * @return keylist
 	 * @throws SQLException
 	 */
-	public ArrayList<Integer> insertAndGetKeysQuery(String sql) {
+	public ArrayList<Integer> insertAndGetKeysQuery(String sql) throws SQLException {
 		Statement s;
-		try {
-			s = connection.createStatement();
-			s.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
-			ResultSet keys = s.getGeneratedKeys();
-			ArrayList<Integer> keyList = new ArrayList<Integer>();
-			int i = 1;
-			while (keys.next()) {
-				keyList.add(keys.getInt(i));
-				i++;
-			}
-			return keyList;
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
+		s = connection.createStatement();
+		s.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+		ResultSet keys = s.getGeneratedKeys();
+		ArrayList<Integer> keyList = new ArrayList<Integer>();
+		int i = 1;
+		while (keys.next()) {
+			keyList.add(keys.getInt(i));
+			i++;
 		}
+		return keyList;
 	}
 
 	/**

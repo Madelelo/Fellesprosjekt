@@ -28,6 +28,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	
 	private static JPanel responsePane;
 	private static JLabel responseLabel;
+	private boolean setupOnce;
 
 	protected static DatabaseConnection db;
 	protected static Employee loggedInAs;
@@ -38,7 +39,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	public MainFrame() {
 		super("Avtalekalender");
 		setSize(800, 500);
-		setLayout(new BorderLayout());
+		setLayout(new BorderLayout(5, 5));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		init();
@@ -64,6 +65,8 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		responseLabel = new JLabel();
 		responsePane = new JPanel();
+		
+		setupOnce = false;
 
 		if (db.isConnected()) {
 			responseLabel.setText("Koblet til database.");
@@ -86,9 +89,13 @@ public class MainFrame extends JFrame implements ActionListener {
 		NewAppmntPane.newAppmntBtn.addActionListener(this);
 
 		ChangeAppmntPane.inviteBtn.addActionListener(this);
+		ChangeAppmntPane.removeBtn.addActionListener(this);
 		ChangeAppmntPane.saveAppmntBtn.addActionListener(this);
 		ChangeAppmntPane.deleteAppmntBtn.addActionListener(this);
 		ChangeAppmntPane.chooseAppmntBtn.addActionListener(this);
+		
+		InvitationPane.acceptBtn.addActionListener(this);
+		InvitationPane.declineBtn.addActionListener(this);
 	}
 
 	/**
@@ -103,15 +110,18 @@ public class MainFrame extends JFrame implements ActionListener {
 	 */
 	public void programSession() {
 		add(menuPane, BorderLayout.WEST);
-		newAppmntPane.setup();
 		
-		try {
-			changeAppmntPane.setup();
-			invitationPane.setup();
-			notificationPane.setup();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(!setupOnce) {
+			newAppmntPane.setup();
+			try {
+				changeAppmntPane.setup();
+				invitationPane.setup();
+				notificationPane.setup();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			setupOnce = true;
 		}
 	}
 	
@@ -128,8 +138,10 @@ public class MainFrame extends JFrame implements ActionListener {
 	 * Clears the JFrame for JPanels to avoid adding them multiple times.
 	 */
 	public void clear() {
+		newAppmntPane.clearValues();
 		remove(newAppmntPane);
 		remove(changeAppmntPane);
+		changeAppmntPane.clearValues();
 		remove(invitationPane);
 		remove(notificationPane);
 	}
@@ -139,7 +151,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
+		
 		if (e.getActionCommand().equals("Logg inn")) {
 			String username = LoginPane.usernameField.getText();
 			String password = LoginPane.pwField.getText();
@@ -172,12 +184,10 @@ public class MainFrame extends JFrame implements ActionListener {
 			if (db.createAppointment(new Appointment(date, start, end, dur, loc,
 					desc), loggedInAs)) {
 				responseLabel.setText("Avtale lagt til.");
+				clear();
 			} else {
 				responseLabel.setText("Kunne ikke legge til avtale.");
 			}
-			
-			newAppmntPane.clearValues();
-			clear();
 		}
 
 		else if (e.getActionCommand().equals("Endre avtale")) {
@@ -193,69 +203,111 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		else if (e.getActionCommand().equals("Velg avtale")) {
 			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
-			int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
-			ResultSet appmntSet = db.getAppointment(appmntID);
-			
-			try {
-				changeAppmntPane.putValues(appmntSet);
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if(appmnt != null) {
+				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
+				ResultSet appmntSet = db.getAppointment(appmntID);
+				responseLabel.setText("Avtale " + appmntID + " valgt.");
+				
+				try {
+					changeAppmntPane.putValues(appmntSet);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 		
 		else if (e.getActionCommand().equals("Slett avtale")) {
 			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
-			int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
-			
-			db.deleteAppointment(appmntID);
-			changeAppmntPane.clearValues();
-			try {
-				changeAppmntPane.refresh();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if(appmnt != null) {
+				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
+				db.deleteAppointment(appmntID);
+				responseLabel.setText("Avtale ble slettet");
+				changeAppmntPane.clearValues();
+				try {
+					changeAppmntPane.refresh();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 		
 		else if (e.getActionCommand().equals("Lagre avtale")) {
-			clear();
+			//clear();
 		}
 		
 		else if (e.getActionCommand().equals("Inviter til avtale")) {
 			String email = ChangeAppmntPane.notInvitedList.getSelectedValue();
-//			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
-//			int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
-			int appmntID = changeAppmntPane.getCurrenAppmntID();
-			
-			db.inviteTo(email, appmntID);
-			try {
-				changeAppmntPane.refresh();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			if(email != null) {
+				int appmntID = changeAppmntPane.getCurrenAppmntID();
+				db.inviteTo(email, appmntID);
+				responseLabel.setText("Brukeren ble invitert til avtale.");
+				try {
+					changeAppmntPane.refreshInviteList();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 		
 		else if (e.getActionCommand().equals("Fjern fra avtale")) {
 			String email = ChangeAppmntPane.invitedList.getSelectedValue();
-			int appmntID = changeAppmntPane.getCurrenAppmntID();
-			
-			
+			if(email != null) {
+				int appmntID = changeAppmntPane.getCurrenAppmntID();
+				db.removeFrom(email, appmntID);
+				responseLabel.setText("Brukeren ble fjernet fra avtale.");
+				try {
+					changeAppmntPane.refreshInviteList();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 		}
 		
 		else if (e.getActionCommand().equals("Invitasjoner")) {
 			clear();
+			try {
+				invitationPane.refresh();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			add(invitationPane, BorderLayout.CENTER);
-			
 		}
 		
 		else if (e.getActionCommand().equals("Godta")) {
+			String appmnt = InvitationPane.invitationList.getSelectedValue();
+			if(appmnt != null) { 
+				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
+				db.confirmInvitation(loggedInAs.getEmail(), appmntID);
+				responseLabel.setText("Du har godtatt invitasjonen.");
+			}
 			
+			try {
+				invitationPane.refresh();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		else if (e.getActionCommand().equals("Avslå")) {
-	
+			String appmnt = InvitationPane.invitationList.getSelectedValue();
+			if(appmnt != null) { 
+				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
+				db.declineInvitation(loggedInAs.getEmail(), appmntID);
+				responseLabel.setText("Du har avslått invitasjonen.");
+			}
+			
+			try {
+				invitationPane.refresh();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 		else if (e.getActionCommand().equals("Vis ukekalender")) {
@@ -275,7 +327,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		repaint();
-
+		setVisible(true);
 	}
 
 }
