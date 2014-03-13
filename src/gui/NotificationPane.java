@@ -44,6 +44,5 @@ public class NotificationPane extends JPanel {
 		setLayout(new GridLayout(2, 1));
 		add(notLabel);
 		add(notArea);
-		/*Halla*/
 	}
 }
