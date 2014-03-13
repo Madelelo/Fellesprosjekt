@@ -29,14 +29,14 @@ public class InvitationPane extends JPanel {
 	
 	public void setup() throws SQLException {
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
-		/*ResultSet appmnts = MainFrame.db.getInvitations(MainFrame.loggedInAs);
+		ResultSet appmnts = MainFrame.db.getInvitations(MainFrame.loggedInAs);
 		while(appmnts.next()) {
 			String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
 			listModel.addElement(avtale);
 		}
 		invitationList = new JList<String>(listModel);
 		invitationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		invitationList.setLayoutOrientation(JList.VERTICAL);*/
+		invitationList.setLayoutOrientation(JList.VERTICAL);
 		
 		setLayout(new GridLayout(2,2));
 		add(new JLabel("Velg invitasjon:"));
