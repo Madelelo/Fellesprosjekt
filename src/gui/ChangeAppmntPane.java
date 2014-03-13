@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,19 +63,20 @@ public class ChangeAppmntPane extends JPanel {
 		
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		ResultSet appmnts = MainFrame.db.getAppointmentsBy(MainFrame.loggedInAs);
-		System.out.println(MainFrame.loggedInAs.getEmail());
-		while(appmnts.next()) {
-			String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
-			listModel.addElement(avtale);
+		if (appmnts != null) {
+			while(appmnts.next()) {
+				String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
+				listModel.addElement(avtale);
+			}
 		}
 		appmntList = new JList<String>(listModel);
 		appmntList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		appmntList.setLayoutOrientation(JList.VERTICAL);
 		
-		setLayout(new BorderLayout());
-		topPane.setLayout(new GridLayout(1, 2));
-		midPane.setLayout(new GridLayout(7, 2));
-		bottomPane.setLayout(new GridLayout(2, 2));
+		setLayout(new BorderLayout(5, 5));
+		topPane.setLayout(new GridLayout(1, 2, 5, 5));
+		midPane.setLayout(new GridLayout(7, 2, 5, 5));
+		bottomPane.setLayout(new GridLayout(2, 3, 5, 5));
 		
 		topPane.add(appmntList);
 		topPane.add(chooseAppmntBtn);
@@ -96,32 +98,41 @@ public class ChangeAppmntPane extends JPanel {
 		
 		add(topPane, BorderLayout.NORTH);
 		add(midPane, BorderLayout.CENTER);
-		add(bottomPane, BorderLayout.SOUTH);
 	}
 	
 	public void putValues(ResultSet appmnt) throws SQLException {
 		appmnt.next();
 		currentAppmntID = appmnt.getInt(1);
+		remove(bottomPane);
+		bottomPane = new JPanel(new GridLayout(2,3));
 		
-//		DefaultListModel<String> listModel = new DefaultListModel<String>();
-//		ResultSet invited = MainFrame.db.getInvitedEmployees(currentAppmntID);
-//		while(invited.next()) {
-//			String ansatt = invited.getString(1);
-//			listModel.addElement(ansatt);
-//		}
-//		invitedList = new JList<String>(listModel);
-//		invitedList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-//		invitedList.setLayoutOrientation(JList.VERTICAL);
-//		
-//		listModel = new DefaultListModel<String>();
-//		ResultSet notInvited = MainFrame.db.getUninvitedEmployees(currentAppmntID);
-//		while(notInvited.next()) {
-//			String ansatt = notInvited.getString(1);
-//			listModel.addElement(ansatt);
-//		}
-//		notInvitedList = new JList<String>(listModel);
-//		notInvitedList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-//		notInvitedList.setLayoutOrientation(JList.VERTICAL);
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
+		ResultSet invited = MainFrame.db.getInvitedEmployees(currentAppmntID);
+		if (invited != null) {	
+			while(invited.next()) {
+				String ansatt = invited.getString(1);
+				if(!invited.getBoolean(2)) {ansatt += " (Ubesvart)";}
+				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Godtatt)";}
+				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Avslått)";}
+				listModel.addElement(ansatt);
+			}
+		}
+		invitedList = new JList<String>(listModel);
+		invitedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		invitedList.setLayoutOrientation(JList.VERTICAL);
+		
+		listModel = new DefaultListModel<String>();
+		ResultSet notInvited = MainFrame.db.getUninvitedEmployees(currentAppmntID);
+		if (notInvited != null) {
+			while(notInvited.next()) {
+				String ansatt = notInvited.getString(1);
+				listModel.addElement(ansatt);
+			}
+		}
+		notInvitedList = new JList<String>(listModel);
+		notInvitedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		notInvitedList.setLayoutOrientation(JList.VERTICAL);
+		notInvitedList.setBackground(Color.LIGHT_GRAY);
 		
 		date.setText(appmnt.getDate(2).toString());
 		starttime.setText(appmnt.getTime(3).toString());
@@ -130,11 +141,13 @@ public class ChangeAppmntPane extends JPanel {
 		description.setText(appmnt.getString(6).toString());
 		location.setText(appmnt.getString(7).toString());
 		
-//		bottomPane.add(invitedList);
-		bottomPane.add(inviteBtn);
-//		bottomPane.add(notInvitedList);
+		bottomPane.add(new JLabel("Inviterte ansatte:"));
+		bottomPane.add(invitedList);
 		bottomPane.add(removeBtn);
-		
+		bottomPane.add(new JLabel("Uinviterte ansatte:"));
+		bottomPane.add(notInvitedList);
+		bottomPane.add(inviteBtn);
+		add(bottomPane, BorderLayout.SOUTH);
 	}
 	
 	public void clearValues() {
@@ -144,32 +157,44 @@ public class ChangeAppmntPane extends JPanel {
 		duration.setText("");
 		description.setText("");
 		location.setText("");
+		remove(bottomPane);
 	}
 	
 	public void refresh() throws SQLException {
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		ResultSet appmnts = MainFrame.db.getAppointmentsBy(MainFrame.loggedInAs);
-		while(appmnts.next()) {
-			String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
-			listModel.addElement(avtale);
+		if(appmnts != null) {
+			while(appmnts.next()) {
+				String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
+				listModel.addElement(avtale);
+			}
 		}
 		appmntList.setModel(listModel);
-		
-		/*listModel = new DefaultListModel<String>();
+	}
+	
+	public void refreshInviteList() throws SQLException {
+		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		ResultSet invited = MainFrame.db.getInvitedEmployees(currentAppmntID);
-		while(invited.next()) {
-			String ansatt = invited.getString(1);
-			listModel.addElement(ansatt);
+		if(invited != null) {
+			while(invited.next()) {
+				String ansatt = invited.getString(1);
+				if(!invited.getBoolean(2)) {ansatt += " (Ubesvart)";}
+				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Godtatt)";}
+				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Avslått)";}
+				listModel.addElement(ansatt);
+			}	
 		}
 		invitedList.setModel(listModel);
 		
 		listModel = new DefaultListModel<String>();
 		ResultSet notInvited = MainFrame.db.getUninvitedEmployees(currentAppmntID);
-		while(notInvited.next()) {
-			String ansatt = notInvited.getString(1);
-			listModel.addElement(ansatt);
+		if(notInvited != null) {
+			while(notInvited.next()) {
+				String ansatt = notInvited.getString(1);
+				listModel.addElement(ansatt);
+			}
 		}
-		notInvitedList.setModel(listModel);*/
+		notInvitedList.setModel(listModel);
 	}
 	
 	public int getCurrenAppmntID() {

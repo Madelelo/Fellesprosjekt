@@ -41,7 +41,7 @@ public class NewAppmntPane extends JPanel {
 	}
 	
 	public void setup() {
-		setLayout(new GridLayout(7, 2));
+		setLayout(new GridLayout(7, 2, 5, 5));
 		
 		add(new JLabel("Dato (YYYY-MM-DD):"));
 		add(date);
