@@ -88,7 +88,7 @@ public class DatabaseConnection {
 		String qry = "SELECT alarmtime FROM notification N, invited_to A, employee E"
 				+ "WHERE N.appointmentID = A.appointmentID";
 		
-		return null;
+		return db.readQuery(qry);
 	}
 	
 	/**
