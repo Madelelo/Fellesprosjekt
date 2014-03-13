@@ -31,7 +31,7 @@ public class InvitationPane extends JPanel {
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		ResultSet appmnts = MainFrame.db.getInvitations(MainFrame.loggedInAs);
 		while(appmnts.next()) {
-			String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
+			String avtale = "Avtale: " + appmnts.getString(1) + ", " + appmnts.getString(2);
 			listModel.addElement(avtale);
 		}
 		invitationList = new JList<String>(listModel);
@@ -40,7 +40,7 @@ public class InvitationPane extends JPanel {
 		
 		setLayout(new GridLayout(2,2));
 		add(new JLabel("Velg invitasjon:"));
-		//add(invitationList);
+		add(invitationList);
 		add(acceptBtn);
 		add(declineBtn);
 		

@@ -64,7 +64,7 @@ public class DatabaseConnection {
 				+ "AND i.appointmentID = a.appointmentID "
 				+ "AND i.hasanswered = " + 0 + ";";
 		
-		return null;
+		return db.readQuery(qry);
 	}
 
 	/**
