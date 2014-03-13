@@ -73,7 +73,7 @@ public class DatabaseConnection {
 	public ResultSet getNotifications(Employee e) {
 		String qry = "SELECT message FROM notification N, invited_to A, employee E "
 				+ "WHERE N.appointmentID = A.appointmentID"
-				+ " AND A.employee = '" + e.getEmail() + "';";
+				+ " AND A.email = '" + e.getEmail() + "';";
 
 		return db.readQuery(qry);
 	}
@@ -85,8 +85,9 @@ public class DatabaseConnection {
 	 * @return ResultSet
 	 */
 	public ResultSet getAlarms(Employee e) {
-		String qry = "SELECT alarmtime FROM notification N, invited_to A, employee E"
-				+ "WHERE N.appointmentID = A.appointmentID";
+		String qry = "SELECT alarmtime FROM notification N, invited_to A, employee E "
+				+ "WHERE N.appointmentID = A.appointmentID"
+				+ "WHERE A.email = '" + e.getEmail() + "';";
 		
 		return db.readQuery(qry);
 	}
