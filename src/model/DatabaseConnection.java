@@ -71,8 +71,8 @@ public class DatabaseConnection {
 	 * @return
 	 */
 	public ResultSet getNotifications(Employee e) {
-		String qry = "SELECT message FROM notification N, appointment_has_employee A, employee E "
-				+ "WHERE N.appointment_appointmentID = A.appoinment_appointmentID"
+		String qry = "SELECT message FROM notification N, invited_to A, employee E "
+				+ "WHERE N.appointmentID = A.appointmentID"
 				+ " AND A.employee = '" + e.getEmail() + "';";
 
 		return db.readQuery(qry);
@@ -85,10 +85,10 @@ public class DatabaseConnection {
 	 * @return ResultSet
 	 */
 	public ResultSet getAlarms(Employee e) {
+		String qry = "SELECT alarmtime FROM notification N, invited_to A, employee E"
+				+ "WHERE N.appointmentID = A.appointmentID";
 		
-		//Må implementeres.
-		
-		return null;
+		return db.readQuery(qry);
 	}
 	
 	/**
@@ -165,10 +165,10 @@ public class DatabaseConnection {
 	 * @param participates
 	 * @return boolean
 	 */
-	public boolean inviteTo(String email, int appmntID, int participates) {
+	public boolean inviteTo(String email, int appmntID) {
 
 		String qry = "INSERT INTO invited_to VALUES ('"
-				+ appmntID + "', '" + email + "', '" + participates + "');";
+				+ appmntID + "', '" + email + "', '0', '0');";
 
 		db.updateQuery(qry);
 
