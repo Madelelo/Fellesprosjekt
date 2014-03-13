@@ -193,7 +193,24 @@ public class DatabaseConnection {
 	 */
 	public boolean confirmInvitation(String email, int appmntID) {
 		
-		//Må implementeres.hasanswered=1, isparticipating=1
+		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=1 WHERE appointment = " + appmntID + ";" ;
+		
+		db.updateQuery(qry);
+		
+		return true;
+	}
+	/**
+	 * Updates the status of the invitation so that the employee has declined.
+	 * 
+	 * @param email
+	 * @param appmntID
+	 * @return boolean
+	 */
+	public boolean declineInvitation(String email, int appmntID) {
+		
+		String qry = "UPDATE invited_to SET hasanswered=0, isparticipating=0 WHERE appointment = " + appmntID + ";" ;
+		
+		db.updateQuery(qry);
 		
 		return true;
 	}
