@@ -193,7 +193,9 @@ public class DatabaseConnection {
 	 */
 	public boolean confirmInvitation(String email, int appmntID) {
 		
-		//Må implementeres.hasanswered=1, isparticipating=1
+		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=1 WHERE appointment = " + appmntID + ";" ;
+		
+		db.updateQuery(qry);
 		
 		return true;
 	}
