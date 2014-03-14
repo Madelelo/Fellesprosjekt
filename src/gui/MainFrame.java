@@ -116,7 +116,6 @@ public class MainFrame extends JFrame implements ActionListener {
 			try {
 				changeAppmntPane.setup();
 				invitationPane.setup();
-				notificationPane.setup();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -317,6 +316,12 @@ public class MainFrame extends JFrame implements ActionListener {
 		else if (e.getActionCommand().equals("Notifications")) {
 			clear();
 			add(notificationPane, BorderLayout.CENTER);
+			try {
+				notificationPane.refresh();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 
 		else if (e.getActionCommand().equals("Log out")) {

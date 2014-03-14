@@ -81,15 +81,20 @@ public class DatabaseConnection {
 	 * @param appmntID
 	 * @param email
 	 * @return boolean
+	 * @throws SQLException 
 	 */
-	public boolean invitationNotification(int appmntID, String email) {
+	public boolean invitationNotification(int appmntID, String email) throws SQLException {
 		
-		/*
-		 * Må implementeres.
-		 * Beskjeden som legges ved varslingen kan f.eks være:
-		 * "You have been invited to an appointment [dato], by [owner of appointment]"
-		 */
+		ResultSet appmnt = getAppointment(appmntID);
+		appmnt.next();
+
+		String msg = "You have been invited to an appointment " + appmnt.getDate(2).toString() + ", by "
+				+ appmnt.getString(8);
 		
+		String qry = "INSERT INTO notification (message, appointmentID, email) "
+				+ "VALUES ('" + msg + "', " + appmntID + ", '" + email +"');";
+		
+		db.updateQuery(qry);
 		return true;
 	}
 	
@@ -118,8 +123,7 @@ public class DatabaseConnection {
 	 * @return
 	 */
 	public ResultSet getNotifications(Employee e) {
-		String qry = "SELECT message FROM notification N, invited_to i WHERE N.appointmentID = i.appointmentID AND i.email = '"
-				+ e.getEmail() + "';";
+		String qry = "SELECT notificationID, message FROM notification n WHERE n.email = '" + e.getEmail() + "';";
 
 		return db.readQuery(qry);
 	}
@@ -229,6 +233,13 @@ public class DatabaseConnection {
 				+ email + "', '0', '0');";
 
 		db.updateQuery(qry);
+		
+		try {
+			invitationNotification(appmntID, email);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return true;
 	}
