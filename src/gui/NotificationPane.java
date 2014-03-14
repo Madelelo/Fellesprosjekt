@@ -22,25 +22,26 @@ public class NotificationPane extends JPanel {
 
 	public NotificationPane() {
 
-		notLabel = new JLabel("Varsler");
-		alarmLabel = new JLabel("Alarmer");
+		notLabel = new JLabel("Notifications:");
+		alarmLabel = new JLabel("Alarms:");
 		notArea = new JTextArea();
 		alarmArea = new JTextArea();
 
 	}
 
 	public void setup() throws SQLException {
-		ResultSet notifications = MainFrame.db
-				.getNotifications(MainFrame.loggedInAs);
-		notifications.next();
-		notArea.setText(notifications.getString(1));
-		while (notifications.next()) {
-			notArea.setText(notArea.getText() + "\n"
-					+ notifications.getString(1));
+		/*ResultSet notifications = MainFrame.db.getNotifications(MainFrame.loggedInAs);
+		if(notifications != null) {
+			notifications.next();
+			notArea.setText(notifications.getString(1));
+			while (notifications.next()) {
+				notArea.setText(notArea.getText() + "\n"
+						+ notifications.getString(1));
+			}
 		}
 
 		setLayout(new GridLayout(2, 1));
 		add(notLabel);
-		add(notArea);
+		add(notArea);*/
 	}
 }

@@ -22,14 +22,14 @@ public class LoginPane extends JPanel {
 	public LoginPane() {
 		usernameField = new JTextField(20);
 		pwField = new JPasswordField(20);
-		loginBtn = new JButton("Logg inn");
+		loginBtn = new JButton("Log in");
 		
 		setLayout(new GridLayout(3, 2, 5, 5));
-		add(new JLabel("Brukernavn:"));
+		add(new JLabel("Username:"));
 		add(usernameField);
-		add(new JLabel("Passord:"));
+		add(new JLabel("Password:"));
 		add(pwField);
-		add(new JLabel("Klikk for å logge inn"));
+		add(new JLabel("Click to log in"));
 		add(loginBtn);
 	}
 

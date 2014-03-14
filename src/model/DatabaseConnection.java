@@ -32,17 +32,12 @@ public class DatabaseConnection {
 	 * @return ResultSet
 	 */
 	public ResultSet getInvitedEmployees(int appmntID) {
-<<<<<<< HEAD
 
-		return null;
-=======
-		
 		String qry = "SELECT e.email, i.hasanswered, i.isparticipating FROM employee e, invited_to i "
 				+ "WHERE e.email = i.email "
 				+ "AND i.appointmentID = " + appmntID +";";
 		
 		return db.readQuery(qry);
->>>>>>> origin/Erling
 	}
 
 	/**
@@ -53,18 +48,11 @@ public class DatabaseConnection {
 	 */
 	public ResultSet getUninvitedEmployees(int appmntID) {
 
-<<<<<<< HEAD
-		String qry = "SELECT username FROM employee E "
-				+ "WHERE E.email NOT IN ("
-				+ "SELECT E.email FROM employee E, invited_to A "
-				+ "WHERE E.email = A.email)";
-=======
 		String qry = "SELECT e.email FROM employee e "
 				+ "WHERE e.email NOT IN ("
 				+ "SELECT e.email FROM employee e, invited_to i "
 				+ "WHERE e.email = i.email "
 				+ "AND i.appointmentID = " + appmntID + ");";
->>>>>>> origin/Erling
 
 		return db.readQuery(qry);
 	}
@@ -77,19 +65,50 @@ public class DatabaseConnection {
 	 */
 	public ResultSet getInvitations(Employee e) {
 
-<<<<<<< HEAD
-		String qry = "SELECT date, starttime FROM invited_to i, appointment a "
-				+ "WHERE i.email = '" + e.getEmail() + "' "
-=======
 		String qry = "SELECT date, starttime, a.appointmentID FROM invited_to i, appointment a "
 				+ "WHERE i.email = '"
 				+ e.getEmail()
 				+ "' "
->>>>>>> origin/Erling
 				+ "AND i.appointmentID = a.appointmentID "
 				+ "AND i.hasanswered = " + 0 + ";";
 
 		return db.readQuery(qry);
+	}
+	
+	/**
+	 * Creates a notification when a user is invited to an appointment.
+	 * 
+	 * @param appmntID
+	 * @param email
+	 * @return boolean
+	 */
+	public boolean invitationNotification(int appmntID, String email) {
+		
+		/*
+		 * Må implementeres.
+		 * Beskjeden som legges ved varslingen kan f.eks være:
+		 * "You have been invited to an appointment [dato], by [owner of appointment]"
+		 */
+		
+		return true;
+	}
+	
+	/**
+	 * Creates a notification when a user answers an invitation.
+	 * 
+	 * @param appmntID
+	 * @param email
+	 * @return boolean
+	 */
+	public boolean answerNotification(int appmntID, String email) {
+		
+		/*
+		 * Må implementeres.
+		 * Beskjeden som legges ved varslingen kan f.eks være:
+		 * "[employee email] has [accepted/declined] your invitation to appointment [appointmentID]" 
+		 */
+		
+		return true;
 	}
 
 	/**
@@ -215,8 +234,6 @@ public class DatabaseConnection {
 	}
 
 	/**
-<<<<<<< HEAD
-=======
 	 * Removes an employee from an given appointment.
 	 * 
 	 * @param email
@@ -235,7 +252,6 @@ public class DatabaseConnection {
 	}
 
 	/**
->>>>>>> origin/Erling
 	 * Updates the status of the invitation so that the employee is
 	 * participating.
 	 * 
@@ -245,15 +261,9 @@ public class DatabaseConnection {
 	 */
 	public boolean confirmInvitation(String email, int appmntID) {
 
-<<<<<<< HEAD
-		
-		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=1 WHERE appointment = " + appmntID + " AND email = '" + email + "';" ;
-		
-=======
 		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=1 WHERE appointmentID = "
 				+ appmntID + " AND email = '" + email + "';";
 
->>>>>>> origin/Erling
 		db.updateQuery(qry);
 
 		return true;

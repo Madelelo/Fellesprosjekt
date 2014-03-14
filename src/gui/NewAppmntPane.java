@@ -37,23 +37,23 @@ public class NewAppmntPane extends JPanel {
 		duration = new JTextField();
 		location = new JTextField();
 		description = new JTextField();
-		newAppmntBtn = new JButton("Opprett avtale");
+		newAppmntBtn = new JButton("Create appointment");
 	}
 	
 	public void setup() {
 		setLayout(new GridLayout(7, 2, 5, 5));
 		
-		add(new JLabel("Dato (YYYY-MM-DD):"));
+		add(new JLabel("Date (YYYY-MM-DD):"));
 		add(date);
-		add(new JLabel("Starttidspunkt (HH:MM:SS):"));
+		add(new JLabel("Starttime (HH:MM:SS):"));
 		add(starttime);
-		add(new JLabel("Slutttidspunkt (HH:MM:SS):"));
+		add(new JLabel("Endtime (HH:MM:SS):"));
 		add(endtime);
-		add(new JLabel("[Eller] Lengde (H.M):"));
+		add(new JLabel("[OR] Duration (H.M):"));
 		add(duration);
-		add(new JLabel("Beskrivelse:"));
+		add(new JLabel("Description:"));
 		add(description);
-		add(new JLabel("Sted:"));
+		add(new JLabel("Location:"));
 		add(location);
 		add(newAppmntBtn);
 	}

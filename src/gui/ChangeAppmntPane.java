@@ -52,11 +52,11 @@ public class ChangeAppmntPane extends JPanel {
 		duration = new JTextField();
 		location = new JTextField();
 		description = new JTextField();
-		chooseAppmntBtn = new JButton("Velg avtale");
-		inviteBtn = new JButton("Inviter til avtale");
-		removeBtn = new JButton("Fjern fra avtale");
-		saveAppmntBtn = new JButton("Lagre avtale");
-		deleteAppmntBtn = new JButton("Slett avtale");
+		chooseAppmntBtn = new JButton("Pick appointment");
+		inviteBtn = new JButton("Invite to appointment");
+		removeBtn = new JButton("Remove from appointment");
+		saveAppmntBtn = new JButton("Save appointment");
+		deleteAppmntBtn = new JButton("Delete appointment");
 	}
 	
 	public void setup() throws SQLException {
@@ -65,7 +65,7 @@ public class ChangeAppmntPane extends JPanel {
 		ResultSet appmnts = MainFrame.db.getAppointmentsBy(MainFrame.loggedInAs);
 		if (appmnts != null) {
 			while(appmnts.next()) {
-				String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
+				String avtale = "Appointment: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
 				listModel.addElement(avtale);
 			}
 		}
@@ -81,17 +81,17 @@ public class ChangeAppmntPane extends JPanel {
 		topPane.add(appmntList);
 		topPane.add(chooseAppmntBtn);
 		
-		midPane.add(new JLabel("Dato (YYYY-MM-DD):"));
+		midPane.add(new JLabel("Date (YYYY-MM-DD):"));
 		midPane.add(date);
-		midPane.add(new JLabel("Starttidspunkt (HH:MM:SS):"));
+		midPane.add(new JLabel("Starttime (HH:MM:SS):"));
 		midPane.add(starttime);
-		midPane.add(new JLabel("Slutttidspunkt (HH:MM:SS):"));
+		midPane.add(new JLabel("Endtime (HH:MM:SS):"));
 		midPane.add(endtime);
-		midPane.add(new JLabel("[Eller] Lengde (H.M):"));
+		midPane.add(new JLabel("[OR] Duration (H.M):"));
 		midPane.add(duration);
-		midPane.add(new JLabel("Sted:"));
+		midPane.add(new JLabel("Location:"));
 		midPane.add(location);
-		midPane.add(new JLabel("Beskrivelse:"));
+		midPane.add(new JLabel("Duration:"));
 		midPane.add(description);
 		midPane.add(deleteAppmntBtn);
 		midPane.add(saveAppmntBtn);
@@ -111,9 +111,9 @@ public class ChangeAppmntPane extends JPanel {
 		if (invited != null) {	
 			while(invited.next()) {
 				String ansatt = invited.getString(1);
-				if(!invited.getBoolean(2)) {ansatt += " (Ubesvart)";}
-				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Godtatt)";}
-				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Avslått)";}
+				if(!invited.getBoolean(2)) {ansatt += " (Unanswered)";}
+				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Accepted)";}
+				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Declined)";}
 				listModel.addElement(ansatt);
 			}
 		}
@@ -141,10 +141,10 @@ public class ChangeAppmntPane extends JPanel {
 		description.setText(appmnt.getString(6).toString());
 		location.setText(appmnt.getString(7).toString());
 		
-		bottomPane.add(new JLabel("Inviterte ansatte:"));
+		bottomPane.add(new JLabel("Invited employees:"));
 		bottomPane.add(invitedList);
 		bottomPane.add(removeBtn);
-		bottomPane.add(new JLabel("Uinviterte ansatte:"));
+		bottomPane.add(new JLabel("Uninvited employees:"));
 		bottomPane.add(notInvitedList);
 		bottomPane.add(inviteBtn);
 		add(bottomPane, BorderLayout.SOUTH);
@@ -165,7 +165,7 @@ public class ChangeAppmntPane extends JPanel {
 		ResultSet appmnts = MainFrame.db.getAppointmentsBy(MainFrame.loggedInAs);
 		if(appmnts != null) {
 			while(appmnts.next()) {
-				String avtale = "Avtale: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
+				String avtale = "Appointment: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
 				listModel.addElement(avtale);
 			}
 		}
@@ -178,9 +178,9 @@ public class ChangeAppmntPane extends JPanel {
 		if(invited != null) {
 			while(invited.next()) {
 				String ansatt = invited.getString(1);
-				if(!invited.getBoolean(2)) {ansatt += " (Ubesvart)";}
-				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Godtatt)";}
-				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Avslått)";}
+				if(!invited.getBoolean(2)) {ansatt += " (Unanswered)";}
+				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Accepted)";}
+				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Declined)";}
 				listModel.addElement(ansatt);
 			}	
 		}

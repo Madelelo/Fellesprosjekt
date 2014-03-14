@@ -37,7 +37,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	 * Constructs the JFrame and sets its attributes.
 	 */
 	public MainFrame() {
-		super("Avtalekalender");
+		super("Appointment Calendar");
 		setSize(800, 500);
 		setLayout(new BorderLayout(5, 5));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -69,7 +69,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		setupOnce = false;
 
 		if (db.isConnected()) {
-			responseLabel.setText("Koblet til database.");
+			responseLabel.setText("Connected to database.");
 		}
 	}
 
@@ -152,28 +152,28 @@ public class MainFrame extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		if (e.getActionCommand().equals("Logg inn")) {
+		if (e.getActionCommand().equals("Log in")) {
 			String username = LoginPane.usernameField.getText();
 			String password = LoginPane.pwField.getText();
 			loggedInAs = db.validateLogin(username, password);
 
 			if (!loggedInAs.getEmail().isEmpty()) {
-				responseLabel.setText("Du er nå logget inn.");
+				responseLabel.setText("You are now logged in.");
 				remove(loginPane);
 				programSession();
 			} else {
-				responseLabel.setText("Feil brukernavn eller passord.");
+				responseLabel.setText("Wrong username and password combination.");
 			}
 			LoginPane.usernameField.setText("");
 			LoginPane.pwField.setText("");
 		}
 
-		else if (e.getActionCommand().equals("Ny avtale")) {
+		else if (e.getActionCommand().equals("New appointment")) {
 			clear();
 			add(newAppmntPane, BorderLayout.CENTER);
 		}
 
-		else if (e.getActionCommand().equals("Opprett avtale")) {
+		else if (e.getActionCommand().equals("Create appointment")) {
 			String start = NewAppmntPane.starttime.getText();
 			String end = NewAppmntPane.endtime.getText();
 			String date = NewAppmntPane.date.getText();
@@ -183,14 +183,14 @@ public class MainFrame extends JFrame implements ActionListener {
 
 			if (db.createAppointment(new Appointment(date, start, end, dur, loc,
 					desc), loggedInAs)) {
-				responseLabel.setText("Avtale lagt til.");
+				responseLabel.setText("Appointment created.");
 				clear();
 			} else {
-				responseLabel.setText("Kunne ikke legge til avtale.");
+				responseLabel.setText("Could not create appointment.");
 			}
 		}
 
-		else if (e.getActionCommand().equals("Endre avtale")) {
+		else if (e.getActionCommand().equals("Change appointment")) {
 			clear();
 			try {
 				changeAppmntPane.refresh();
@@ -201,12 +201,12 @@ public class MainFrame extends JFrame implements ActionListener {
 			add(changeAppmntPane, BorderLayout.CENTER);
 		}
 		
-		else if (e.getActionCommand().equals("Velg avtale")) {
+		else if (e.getActionCommand().equals("Pick appointment")) {
 			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
 			if(appmnt != null) {
 				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
 				ResultSet appmntSet = db.getAppointment(appmntID);
-				responseLabel.setText("Avtale " + appmntID + " valgt.");
+				responseLabel.setText("Appointment " + appmntID + " chosen.");
 				
 				try {
 					changeAppmntPane.putValues(appmntSet);
@@ -217,12 +217,12 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 		
-		else if (e.getActionCommand().equals("Slett avtale")) {
+		else if (e.getActionCommand().equals("Delete appointment")) {
 			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
 			if(appmnt != null) {
 				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
 				db.deleteAppointment(appmntID);
-				responseLabel.setText("Avtale ble slettet");
+				responseLabel.setText("Appointment deleted.");
 				changeAppmntPane.clearValues();
 				try {
 					changeAppmntPane.refresh();
@@ -233,16 +233,16 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 		
-		else if (e.getActionCommand().equals("Lagre avtale")) {
+		else if (e.getActionCommand().equals("Save appointment")) {
 			//clear();
 		}
 		
-		else if (e.getActionCommand().equals("Inviter til avtale")) {
+		else if (e.getActionCommand().equals("Invite to appointment")) {
 			String email = ChangeAppmntPane.notInvitedList.getSelectedValue();
 			if(email != null) {
 				int appmntID = changeAppmntPane.getCurrenAppmntID();
 				db.inviteTo(email, appmntID);
-				responseLabel.setText("Brukeren ble invitert til avtale.");
+				responseLabel.setText("User invited to appointment.");
 				try {
 					changeAppmntPane.refreshInviteList();
 				} catch (SQLException e1) {
@@ -252,12 +252,12 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 		
-		else if (e.getActionCommand().equals("Fjern fra avtale")) {
+		else if (e.getActionCommand().equals("Remove from appointment")) {
 			String email = ChangeAppmntPane.invitedList.getSelectedValue().split(" ")[0];
 			if(email != null) {
 				int appmntID = changeAppmntPane.getCurrenAppmntID();
 				db.removeFrom(email, appmntID);
-				responseLabel.setText("Brukeren ble fjernet fra avtale.");
+				responseLabel.setText("User removed from appointment.");
 				try {
 					changeAppmntPane.refreshInviteList();
 				} catch (SQLException e1) {
@@ -267,7 +267,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 		
-		else if (e.getActionCommand().equals("Invitasjoner")) {
+		else if (e.getActionCommand().equals("Invitations")) {
 			clear();
 			try {
 				invitationPane.refresh();
@@ -278,12 +278,12 @@ public class MainFrame extends JFrame implements ActionListener {
 			add(invitationPane, BorderLayout.CENTER);
 		}
 		
-		else if (e.getActionCommand().equals("Godta")) {
+		else if (e.getActionCommand().equals("Accept")) {
 			String appmnt = InvitationPane.invitationList.getSelectedValue();
 			if(appmnt != null) { 
 				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
 				db.confirmInvitation(loggedInAs.getEmail(), appmntID);
-				responseLabel.setText("Du har godtatt invitasjonen.");
+				responseLabel.setText("You have accepted the invitation.");
 			}
 			
 			try {
@@ -294,12 +294,12 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 		
-		else if (e.getActionCommand().equals("Avslå")) {
+		else if (e.getActionCommand().equals("Decline")) {
 			String appmnt = InvitationPane.invitationList.getSelectedValue();
 			if(appmnt != null) { 
 				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
 				db.declineInvitation(loggedInAs.getEmail(), appmntID);
-				responseLabel.setText("Du har avslått invitasjonen.");
+				responseLabel.setText("You have declined the invitation.");
 			}
 			
 			try {
@@ -310,17 +310,17 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 
-		else if (e.getActionCommand().equals("Vis ukekalender")) {
+		else if (e.getActionCommand().equals("Show week calendar")) {
 			clear();
 		}
 		
-		else if (e.getActionCommand().equals("Se varsler")) {
+		else if (e.getActionCommand().equals("Notifications")) {
 			clear();
 			add(notificationPane, BorderLayout.CENTER);
 		}
 
-		else if (e.getActionCommand().equals("Logg ut")) {
-			responseLabel.setText("Du er nå logget ut.");
+		else if (e.getActionCommand().equals("Log out")) {
+			responseLabel.setText("You are now logged out.");
 			clear();
 			remove(menuPane);
 			loginSession();
