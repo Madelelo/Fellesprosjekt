@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
+import model.TimeLogic;
+
 import com.sun.imageio.stream.StreamCloser.CloseAction;
 
 /**
@@ -37,6 +39,8 @@ public class CreateAlarmFrame extends JFrame implements ActionListener {
 	private static JButton appmntBtn;
 	private static JButton newAlarmBtn;
 	
+	private static JLabel currentAppmnt;
+	
 	private int appmntID;
 	
 	public CreateAlarmFrame() throws SQLException {
@@ -52,7 +56,7 @@ public class CreateAlarmFrame extends JFrame implements ActionListener {
 	
 	public void init() {
 		topPane = new JPanel(new GridLayout(1,2));
-		midPane = new JPanel(new GridLayout(2, 2));
+		midPane = new JPanel(new GridLayout(3, 2));
 		bottomPane = new JPanel(new GridLayout(1, 1));
 		
 		alarmMsg = new JTextField();
@@ -60,6 +64,7 @@ public class CreateAlarmFrame extends JFrame implements ActionListener {
 		appmntList = new JList<String>();
 		appmntBtn = new JButton("Pick appointment");
 		newAlarmBtn = new JButton("Create alarm");
+		currentAppmnt = new JLabel("");
 		
 		appmntID = -1;
 		
@@ -75,6 +80,7 @@ public class CreateAlarmFrame extends JFrame implements ActionListener {
 		midPane.add(alarmMsg);
 		midPane.add(new JLabel("Alarm time (HH:MM:SS):"));
 		midPane.add(alarmTime);
+		midPane.add(currentAppmnt);
 		
 		bottomPane.add(newAlarmBtn);
 		
@@ -107,6 +113,7 @@ public class CreateAlarmFrame extends JFrame implements ActionListener {
 			String appmnt = appmntList.getSelectedValue();
 			if(appmnt != null) {
 				setAppmntID(Integer.parseInt(appmnt.split("ID: ")[1]));
+				currentAppmnt.setText("Appointment " + appmntID + " is picked");
 			}
 		}
 		
@@ -114,17 +121,45 @@ public class CreateAlarmFrame extends JFrame implements ActionListener {
 			String msg = alarmMsg.getText();
 			String time = alarmTime.getText();
 			String email = MainFrame.loggedInAs.getEmail();
+			ResultSet date = null;
+			ResultSet starttime = null;
+			String appmntDate = "";
+			String appmntStarttime = "";	
 			
-			if(!(time.isEmpty() || msg.isEmpty() || getAppmntID() == -1)) {
-				MainFrame.db.createAlarm(msg, time, getAppmntID(), email);
-				MainFrame.responseLabel.setText("New alarm created.");
+			if(!(time.isEmpty() || msg.isEmpty() || appmntID == -1)) {
+				
 				try {
-					MainFrame.notificationPane.refresh();
-				} catch (SQLException ex) {
-					System.out.println("Could not refresh notifications.");
-					System.err.println(ex.getMessage());
+					date = MainFrame.db.getAppointmentDate(appmntID);
+					starttime = MainFrame.db.getAppointmentStarttime(appmntID);
+					
+					date.next();
+					starttime.next();
+					
+					if(date != null && starttime != null) {
+						appmntDate = date.getDate(1).toString();
+						appmntStarttime = starttime.getTime(1).toString();
+					}
+				} catch (SQLException e1) {
+					e1.printStackTrace();
 				}
-				dispose();
+				
+				if(TimeLogic.isValidAlarmTime(time, appmntDate, appmntStarttime)) {
+					MainFrame.db.createAlarm(msg, time, appmntID, email);
+					MainFrame.responseLabel.setText("New alarm created.");
+					
+					try {
+						MainFrame.notificationPane.refresh();
+					} catch (SQLException ex) {
+						System.out.println("Could not refresh notifications.");
+						System.err.println(ex.getMessage());
+					}
+					dispose();
+					
+				} else {
+					MainFrame.responseLabel.setText("Could not create alarm. Alarmtime set after scheduled appointment.");
+				}
+			} else {
+				MainFrame.responseLabel.setText("Could not create alarm. Pick an appointment and fill out fields correctly.");
 			}
 		}
 		
@@ -132,10 +167,6 @@ public class CreateAlarmFrame extends JFrame implements ActionListener {
 	
 	private void setAppmntID(int appmntID) {
 		this.appmntID = appmntID;
-	}
-	
-	private int getAppmntID() {
-		return appmntID;
 	}
 
 }

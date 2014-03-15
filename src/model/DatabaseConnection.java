@@ -219,6 +219,30 @@ public class DatabaseConnection {
 
 		return db.readQuery(qry);
 	}
+	
+	/**
+	 * Returns a ResultSet with the date of the appointment.
+	 * 
+	 * @param int appmntID
+	 * @return ResultSet
+	 */
+	public ResultSet getAppointmentDate(int appmntID) {
+		String qry = "SELECT date FROM appointment WHERE appointmentID = " + appmntID + ";";
+		
+		return db.readQuery(qry);
+	}
+	
+	/**
+	 * Returns a ResultSet with the starttime of the appointment.
+	 * 
+	 * @param int appmntID
+	 * @return ResultSet
+	 */
+	public ResultSet getAppointmentStarttime(int appmntID) {
+		String qry = "SELECT starttime FROM appointment WHERE appointmentID = " + appmntID + ";";
+		
+		return db.readQuery(qry);
+	}
 
 	/**
 	 * Inserts new appointment into the database.
