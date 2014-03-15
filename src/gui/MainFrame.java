@@ -24,10 +24,10 @@ public class MainFrame extends JFrame implements ActionListener {
 	private static NewAppmntPane newAppmntPane;
 	private static ChangeAppmntPane changeAppmntPane;
 	private static InvitationPane invitationPane;
-	private static NotificationPane notificationPane;
+	protected static NotificationPane notificationPane;
 	
 	private static JPanel responsePane;
-	private static JLabel responseLabel;
+	protected static JLabel responseLabel;
 	private boolean setupOnce;
 
 	protected static DatabaseConnection db;
@@ -96,6 +96,10 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		InvitationPane.acceptBtn.addActionListener(this);
 		InvitationPane.declineBtn.addActionListener(this);
+		
+		NotificationPane.newAlarmBtn.addActionListener(this);
+		NotificationPane.deleteAlarmBtn.addActionListener(this);
+		NotificationPane.deleteNotiBtn.addActionListener(this);
 	}
 
 	/**
@@ -283,13 +287,14 @@ public class MainFrame extends JFrame implements ActionListener {
 				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
 				db.confirmInvitation(loggedInAs.getEmail(), appmntID);
 				responseLabel.setText("You have accepted the invitation.");
-			}
-			
-			try {
-				invitationPane.refresh();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				
+				try {
+					db.answerNotification(appmntID, loggedInAs.getEmail(), e.getActionCommand());
+					invitationPane.refresh();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 		
@@ -299,13 +304,14 @@ public class MainFrame extends JFrame implements ActionListener {
 				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
 				db.declineInvitation(loggedInAs.getEmail(), appmntID);
 				responseLabel.setText("You have declined the invitation.");
-			}
-			
-			try {
-				invitationPane.refresh();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				
+				try {
+					db.answerNotification(appmntID, loggedInAs.getEmail(), e.getActionCommand());
+					invitationPane.refresh();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 
@@ -321,6 +327,44 @@ public class MainFrame extends JFrame implements ActionListener {
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
+			}
+		}
+		else if (e.getActionCommand().equals("Delete notification")) {
+			String noti = NotificationPane.notiList.getSelectedValue();
+			if(noti != null) {
+				int notiID = Integer.parseInt(noti.split("ID: ")[1]);
+				db.deleteNotification(notiID);
+				responseLabel.setText("Notification deleted.");
+				
+				try {
+					notificationPane.refresh();
+				} catch (SQLException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		
+		else if (e.getActionCommand().equals("Make new alarm")) {
+			try {
+				new CreateAlarmFrame();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		else if (e.getActionCommand().equals("Delete alarm")) {
+			String alarm = NotificationPane.alarmList.getSelectedValue();
+			if(alarm != null) {
+				int alarmID = Integer.parseInt(alarm.split("ID: ")[1]);
+				db.deleteNotification(alarmID);
+				responseLabel.setText("Alarm deleted");
+				
+				try {
+					notificationPane.refresh();
+				} catch(SQLException ex) {
+					ex.printStackTrace();
+				}
 			}
 		}
 
