@@ -29,6 +29,7 @@ public class NewAppmntPane extends JPanel {
 	protected static JTextField location;
 	protected static JTextField description;
 	protected static JButton newAppmntBtn;
+	protected static JButton findRoomBtn;
 	
 	public NewAppmntPane() {
 		date = new JTextField();
@@ -38,10 +39,11 @@ public class NewAppmntPane extends JPanel {
 		location = new JTextField();
 		description = new JTextField();
 		newAppmntBtn = new JButton("Create appointment");
+		findRoomBtn = new JButton("Find room");
 	}
 	
 	public void setup() {
-		setLayout(new GridLayout(7, 2, 5, 5));
+		setLayout(new GridLayout(8, 2, 5, 5));
 		
 		add(new JLabel("Date (YYYY-MM-DD):"));
 		add(date);
@@ -51,10 +53,12 @@ public class NewAppmntPane extends JPanel {
 		add(endtime);
 		add(new JLabel("[OR] Duration (H.M):"));
 		add(duration);
-		add(new JLabel("Description:"));
-		add(description);
 		add(new JLabel("Location:"));
 		add(location);
+		add(new JLabel(""));
+		add(findRoomBtn);
+		add(new JLabel("Description:"));
+		add(description);
 		add(newAppmntBtn);
 	}
 	

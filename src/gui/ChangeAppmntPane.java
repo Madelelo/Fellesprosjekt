@@ -34,9 +34,10 @@ public class ChangeAppmntPane extends JPanel {
 	protected static JButton removeBtn;
 	protected static JButton saveAppmntBtn;
 	protected static JButton deleteAppmntBtn;
-	protected static JPanel topPane;
-	protected static JPanel midPane;
-	protected static JPanel bottomPane;
+	protected static JButton findRoomBtn;
+	private static JPanel topPane;
+	private static JPanel midPane;
+	private static JPanel bottomPane;
 	protected static JList<String> invitedList;
 	protected static JList<String> notInvitedList;
 	protected static JList<String> appmntList;
@@ -57,6 +58,7 @@ public class ChangeAppmntPane extends JPanel {
 		removeBtn = new JButton("Remove from appointment");
 		saveAppmntBtn = new JButton("Save appointment");
 		deleteAppmntBtn = new JButton("Delete appointment");
+		findRoomBtn = new JButton("Find room");
 	}
 	
 	public void setup() throws SQLException {
@@ -75,7 +77,7 @@ public class ChangeAppmntPane extends JPanel {
 		
 		setLayout(new BorderLayout(5, 5));
 		topPane.setLayout(new GridLayout(1, 2, 5, 5));
-		midPane.setLayout(new GridLayout(7, 2, 5, 5));
+		midPane.setLayout(new GridLayout(8, 2, 5, 5));
 		bottomPane.setLayout(new GridLayout(2, 3, 5, 5));
 		
 		topPane.add(appmntList);
@@ -91,7 +93,9 @@ public class ChangeAppmntPane extends JPanel {
 		midPane.add(duration);
 		midPane.add(new JLabel("Location:"));
 		midPane.add(location);
-		midPane.add(new JLabel("Duration:"));
+		midPane.add(new JLabel(""));
+		midPane.add(findRoomBtn);
+		midPane.add(new JLabel("Description:"));
 		midPane.add(description);
 		midPane.add(deleteAppmntBtn);
 		midPane.add(saveAppmntBtn);

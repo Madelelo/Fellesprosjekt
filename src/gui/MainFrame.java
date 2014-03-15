@@ -87,12 +87,14 @@ public class MainFrame extends JFrame implements ActionListener {
 		MenuPane.alarmBtn.addActionListener(this);
 
 		NewAppmntPane.newAppmntBtn.addActionListener(this);
+		NewAppmntPane.findRoomBtn.addActionListener(this);
 
 		ChangeAppmntPane.inviteBtn.addActionListener(this);
 		ChangeAppmntPane.removeBtn.addActionListener(this);
 		ChangeAppmntPane.saveAppmntBtn.addActionListener(this);
 		ChangeAppmntPane.deleteAppmntBtn.addActionListener(this);
 		ChangeAppmntPane.chooseAppmntBtn.addActionListener(this);
+		ChangeAppmntPane.findRoomBtn.addActionListener(this);
 		
 		InvitationPane.acceptBtn.addActionListener(this);
 		InvitationPane.declineBtn.addActionListener(this);
