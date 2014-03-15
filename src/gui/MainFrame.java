@@ -21,8 +21,8 @@ public class MainFrame extends JFrame implements ActionListener {
 
 	private static LoginPane loginPane;
 	private static MenuPane menuPane;
-	private static NewAppmntPane newAppmntPane;
-	private static ChangeAppmntPane changeAppmntPane;
+	protected static NewAppmntPane newAppmntPane;
+	protected static ChangeAppmntPane changeAppmntPane;
 	private static InvitationPane invitationPane;
 	protected static NotificationPane notificationPane;
 	

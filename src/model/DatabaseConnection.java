@@ -142,7 +142,7 @@ public class DatabaseConnection {
 	public ResultSet getNotifications(Employee e) {
 		String qry = "SELECT notificationID, message FROM notification n "
 				+ "WHERE n.email = '" + e.getEmail() + "' "
-				+ "AND n.alarmtime = 'null';";
+				+ "AND n.alarmtime IS NULL;";
 
 		return db.readQuery(qry);
 	}
