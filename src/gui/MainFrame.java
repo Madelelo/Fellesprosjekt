@@ -346,15 +346,6 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 		
-		else if (e.getActionCommand().equals("Make new alarm")) {
-			try {
-				new CreateAlarmFrame();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-		
 		else if (e.getActionCommand().equals("Delete alarm")) {
 			String alarm = NotificationPane.alarmList.getSelectedValue();
 			if(alarm != null) {
@@ -379,6 +370,19 @@ public class MainFrame extends JFrame implements ActionListener {
 		
 		repaint();
 		setVisible(true);
+		
+		if (e.getActionCommand().equals("Find room")) {
+			new FindRoomFrame();
+		}
+		
+		else if (e.getActionCommand().equals("Make new alarm")) {
+			try {
+				new CreateAlarmFrame();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 	}
 
 }
