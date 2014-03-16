@@ -185,13 +185,19 @@ public class MainFrame extends JFrame implements ActionListener {
 			String dur = NewAppmntPane.duration.getText();
 			String desc = NewAppmntPane.description.getText();
 			String loc = NewAppmntPane.location.getText();
-
-			if (db.createAppointment(new Appointment(date, start, end, dur, loc,
-					desc), loggedInAs)) {
-				responseLabel.setText("Appointment created.");
-				clear();
+			
+			if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidTimeString(end)) {
+				responseLabel.setText("Illegal time format. Please try again.");
+			} else if(!TimeLogic.isValidDateString(date)) {
+				responseLabel.setText("Illegal date format. Please try again.");
 			} else {
-				responseLabel.setText("Could not create appointment.");
+				if (db.createAppointment(new Appointment(date, start, end, dur, loc,
+						desc), loggedInAs)) {
+					responseLabel.setText("Appointment created.");
+					clear();
+				} else {
+					responseLabel.setText("Could not create appointment.");
+				}
 			}
 		}
 
@@ -239,7 +245,25 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if (e.getActionCommand().equals("Save appointment")) {
-			//clear();
+			if(changeAppmntPane.getCurrenAppmntID() != -1) {
+				String start = ChangeAppmntPane.starttime.getText();
+				String end = ChangeAppmntPane.endtime.getText();
+				String date = ChangeAppmntPane.date.getText();
+				String dur = ChangeAppmntPane.duration.getText();
+				String desc = ChangeAppmntPane.description.getText();
+				String loc = ChangeAppmntPane.location.getText();
+				
+				if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidTimeString(end)) {
+					responseLabel.setText("Illegal time format. Please try again.");
+				} else if(!TimeLogic.isValidDateString(date)) {
+					responseLabel.setText("Illegal date format. Please try again.");
+				} else {
+					
+				}
+			} else {
+				responseLabel.setText("You have to pick an appointment first!");
+			}
+
 		}
 		
 		else if (e.getActionCommand().equals("Invite to appointment")) {

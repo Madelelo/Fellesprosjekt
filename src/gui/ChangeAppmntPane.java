@@ -59,6 +59,7 @@ public class ChangeAppmntPane extends JPanel {
 		saveAppmntBtn = new JButton("Save appointment");
 		deleteAppmntBtn = new JButton("Delete appointment");
 		findRoomBtn = new JButton("Find room");
+		currentAppmntID = -1;
 	}
 	
 	public void setup() throws SQLException {
