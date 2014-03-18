@@ -253,19 +253,34 @@ public class DatabaseConnection {
 	 */
 	public boolean createAppointment(Appointment appmnt, Employee e) {
 		boolean success = true;
-		String qry = "INSERT INTO appointment (date, starttime, endtime, duration, description, meetingroom, owner) VALUES ('"
-				+ appmnt.getDate()
-				+ "', '"
-				+ appmnt.getStarttime()
-				+ "', '"
-				+ appmnt.getEndtime()
-				+ "', '"
-				+ appmnt.getDuration()
-				+ "', '"
-				+ appmnt.getDescription()
-				+ "', '"
-				+ appmnt.getLocation()
-				+ "', '" + e.getEmail() + "');";
+		String qry = "";
+		if(!appmnt.getEndtime().isEmpty()) {
+			qry = "INSERT INTO appointment (date, starttime, endtime, duration, description, meetingroom, owner) VALUES ('"
+					+ appmnt.getDate()
+					+ "', '"
+					+ appmnt.getStarttime()
+					+ "', '"
+					+ appmnt.getEndtime()
+					+ "', '"
+					+ appmnt.getDuration()
+					+ "', '"
+					+ appmnt.getDescription()
+					+ "', '"
+					+ appmnt.getLocation()
+					+ "', '" + e.getEmail() + "');";
+		} else {
+			qry = "INSERT INTO appointment (date, starttime, endtime, duration, description, meetingroom, owner) VALUES ('"
+					+ appmnt.getDate()
+					+ "', '"
+					+ appmnt.getStarttime()
+					+ "', NULL, '"
+					+ appmnt.getDuration()
+					+ "', '"
+					+ appmnt.getDescription()
+					+ "', '"
+					+ appmnt.getLocation()
+					+ "', '" + e.getEmail() + "');";
+		}
 		
 		try {
 			int appmntID = db.insertAndGetKeysQuery(qry).get(0);

@@ -51,7 +51,7 @@ public class NewAppmntPane extends JPanel {
 		add(starttime);
 		add(new JLabel("Endtime (HH:MM:SS):"));
 		add(endtime);
-		add(new JLabel("[OR] Duration (H.M):"));
+		add(new JLabel("[OR] Duration (H:M):"));
 		add(duration);
 		add(new JLabel("Location:"));
 		add(location);

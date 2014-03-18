@@ -90,7 +90,7 @@ public class ChangeAppmntPane extends JPanel {
 		midPane.add(starttime);
 		midPane.add(new JLabel("Endtime (HH:MM:SS):"));
 		midPane.add(endtime);
-		midPane.add(new JLabel("[OR] Duration (H.M):"));
+		midPane.add(new JLabel("[OR] Duration (H:M):"));
 		midPane.add(duration);
 		midPane.add(new JLabel("Location:"));
 		midPane.add(location);
@@ -141,8 +141,12 @@ public class ChangeAppmntPane extends JPanel {
 		
 		date.setText(appmnt.getDate(2).toString());
 		starttime.setText(appmnt.getTime(3).toString());
-		endtime.setText(appmnt.getTime(4).toString());
-		duration.setText(Double.toString(appmnt.getDouble(5)));
+		if(appmnt.getObject(4) != null) {
+			endtime.setText(appmnt.getTime(4).toString());
+		} else {
+			endtime.setText("");
+		}
+		duration.setText(appmnt.getString(5));
 		description.setText(appmnt.getString(6).toString());
 		location.setText(appmnt.getString(7).toString());
 		

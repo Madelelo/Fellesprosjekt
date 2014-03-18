@@ -88,4 +88,27 @@ public abstract class TimeLogic {
 		
 		return isValid;
 	}
+	
+	public static boolean isValidDurationString(String dur) {
+		boolean isValid = false;
+		String[] durArr = dur.split(":");
+		
+		if(durArr.length == 2 && durArr[0].length() < 2 && durArr[1].length() < 3) {
+			String hourS = durArr[0];
+			String minS = durArr[1];
+			
+			if(Character.isDigit(hourS.charAt(0))
+					&& Character.isDigit(minS.charAt(0)) && Character.isDigit(minS.charAt(1))) {
+				
+				int hour = Integer.parseInt(hourS);
+				int min = Integer.parseInt(minS);
+				
+				if(hour < 10 && min < 60) {
+					isValid = true;
+				}
+			}
+		}
+		
+		return isValid;
+	}
 }
