@@ -30,11 +30,12 @@ public class Appointment {
 		setDescription(description);
 	}
 	
-	public Appointment(int id, String date, String starttime, String endtime, String location, String description) {
+	public Appointment(int id, String date, String starttime, String endtime, String duration, String location, String description) {
 		appID = id;
 		setDate(date);
 		setStarttime(starttime);
 		setEndtime(endtime);
+		setDuration(duration);
 		setLocation(location);
 		setDescription(description);
 	}
@@ -108,6 +109,10 @@ public class Appointment {
 	
 	public String getDescription() {
 		return description;
+	}
+	
+	public int getAppointmentID() {
+		return appID;
 	}
 
 }

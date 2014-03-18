@@ -339,6 +339,27 @@ public class DatabaseConnection {
 
 		return success;
 	}
+	
+	/**
+	 * Updates an appointment in the database.
+	 * 
+	 * @param Appointment a
+	 */
+	public void updateAppointment(Appointment a) {
+		
+		String qry = "";
+		if(!a.getEndtime().isEmpty()) {
+			qry = "UPDATE appointment SET date = '" + a.getDate() + "', starttime = '" + a.getStarttime() + "', endtime = '"
+					+ a.getEndtime() + "', duration = '" + a.getDuration() + "', description = '" + a.getDescription()
+					+ "', meetingroom = '" + a.getLocation() + "' WHERE appointmentID = " + a.getAppointmentID() + ";";
+		} else {
+			qry = "UPDATE appointment SET date = '" + a.getDate() + "', starttime = '" + a.getStarttime() + "', endtime = NULL, duration = '"
+					+ a.getDuration() + "', description = '" + a.getDescription()
+					+ "', meetingroom = '" + a.getLocation() + "' WHERE appointmentID = " + a.getAppointmentID() + ";";
+		}
+		
+		db.updateQuery(qry);
+	}
 
 	/**
 	 * Deletes the appointment from the database,

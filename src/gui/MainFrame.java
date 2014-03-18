@@ -268,13 +268,24 @@ public class MainFrame extends JFrame implements ActionListener {
 				String dur = ChangeAppmntPane.duration.getText();
 				String desc = ChangeAppmntPane.description.getText();
 				String loc = ChangeAppmntPane.location.getText();
+				Appointment appmnt = new Appointment(changeAppmntPane.getCurrenAppmntID(), date, start, end, dur, loc, desc);
 				
-				if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidTimeString(end)) {
-					responseLabel.setText("Illegal time format. Please try again.");
-				} else if(!TimeLogic.isValidDateString(date)) {
-					responseLabel.setText("Illegal date format. Please try again.");
+				if(end.isEmpty() && !dur.isEmpty()) {
+					if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidDurationString(dur)) {
+						responseLabel.setText("Illegal time or duration format. Please try again.");
+					} else {
+						db.updateAppointment(appmnt);
+						responseLabel.setText("Appointment updated.");
+					}
 				} else {
-					
+					if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidTimeString(end)) {
+						responseLabel.setText("Illegal time format. Please try again.");
+					} else if(!TimeLogic.isValidDateString(date)) {
+						responseLabel.setText("Illegal date format. Please try again.");
+					} else {
+						db.updateAppointment(appmnt);
+						responseLabel.setText("Appointment updated.");
+					}
 				}
 			} else {
 				responseLabel.setText("You have to pick an appointment first!");
