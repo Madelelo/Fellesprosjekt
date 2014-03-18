@@ -22,12 +22,12 @@ public class MenuPane extends JPanel {
 	
 	
 	public MenuPane() {
-		newAppmntBtn = new JButton("Ny avtale");
-		changeAppmntBtn = new JButton("Endre avtale");
-		invitationBtn = new JButton("Invitasjoner");
-		weekBtn = new JButton("Vis ukekalender");
-		alarmBtn = new JButton("Se varsler");
-		logoutBtn = new JButton("Logg ut");
+		newAppmntBtn = new JButton("New appointment");
+		changeAppmntBtn = new JButton("Change appointment");
+		invitationBtn = new JButton("Invitations");
+		weekBtn = new JButton("Show week calendar");
+		alarmBtn = new JButton("Notifications");
+		logoutBtn = new JButton("Log out");
 		
 		
 		setLayout(new GridLayout(6,1));

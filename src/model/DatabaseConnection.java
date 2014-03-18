@@ -24,84 +24,165 @@ public class DatabaseConnection {
 
 		return db.readQuery(qry);
 	}
-	
+
 	/**
 	 * Returns a ResultSet with all the employees invited to an appointment.
 	 * 
-	 * @param appmntID
+	 * @param int appmntID
 	 * @return ResultSet
 	 */
 	public ResultSet getInvitedEmployees(int appmntID) {
+
+		String qry = "SELECT e.email, i.hasanswered, i.isparticipating FROM employee e, invited_to i "
+				+ "WHERE e.email = i.email "
+				+ "AND i.appointmentID = " + appmntID +";";
 		
-		
-		
-		return null;
+		return db.readQuery(qry);
 	}
-	
+
 	/**
 	 * Returns a ResultSet with all the employees NOT invited to an appointment.
 	 * 
-	 * @param appmntID
+	 * @param int appmntID
 	 * @return ResultSet
 	 */
 	public ResultSet getUninvitedEmployees(int appmntID) {
-		
-		String qry = "SELECT username FROM employee E "
-		+"WHERE E.email NOT IN ("
-		+"SELECT E.email FROM employee E, invited_to A "
-		+"WHERE E.email = A.email)";
-		
+
+		String qry = "SELECT e.email FROM employee e "
+				+ "WHERE e.email NOT IN ("
+				+ "SELECT e.email FROM employee e, invited_to i "
+				+ "WHERE e.email = i.email "
+				+ "AND i.appointmentID = " + appmntID + ");";
+
+		return db.readQuery(qry);
+	}
+
+	/**
+	 * Returns a ResultSet (with appointments) with all unanswered invitations.
+	 * 
+	 * @param Employee e
+	 * @return ResultSet
+	 */
+	public ResultSet getInvitations(Employee e) {
+
+		String qry = "SELECT date, starttime, a.appointmentID FROM invited_to i, appointment a "
+				+ "WHERE i.email = '"
+				+ e.getEmail()
+				+ "' "
+				+ "AND i.appointmentID = a.appointmentID "
+				+ "AND i.hasanswered = " + 0 + ";";
+
 		return db.readQuery(qry);
 	}
 	
 	/**
-	 * Returns a ResultSet (with appointments) with all unanswered invitations.
+	 * Deletes a specific notification from the database.
 	 * 
-	 * @param e
-	 * @return ResultSet
+	 * @param int notiID
+	 * @return boolean
 	 */
-	public ResultSet getInvitations(Employee e) {
+	public boolean deleteNotification(int notiID) {
 		
-		String qry = "SELECT date, starttime FROM invited_to i, appointment a "
-				+ "WHERE i.email = '" + e.getEmail() + "' "
-				+ "AND i.appointmentID = a.appointmentID "
-				+ "AND i.hasanswered = " + 0 + ";";
+		String qry = "DELETE FROM notification WHERE notificationID = " + notiID + ";";
 		
-		return db.readQuery(qry);
+		db.updateQuery(qry);
+		return true;
+	}
+	
+	/**
+	 * Creates a notification when a user is invited to an appointment.
+	 * 
+	 * @param int appmntID
+	 * @param String email
+	 * @return boolean
+	 * @throws SQLException 
+	 */
+	public boolean invitationNotification(int appmntID, String email) throws SQLException {
+		
+		ResultSet appmnt = getAppointment(appmntID);
+		appmnt.next();
+
+		String msg = "You have been invited to an appointment " + appmnt.getDate(2).toString() + ", by "
+				+ appmnt.getString(8);
+		
+		String qry = "INSERT INTO notification (message, appointmentID, email) "
+				+ "VALUES ('" + msg + "', " + appmntID + ", '" + email +"');";
+		
+		db.updateQuery(qry);
+		return true;
+	}
+	
+	/**
+	 * Creates a notification when a user answers an invitation.
+	 * 
+	 * @param int appmntID
+	 * @param String email
+	 * @return boolean
+	 */
+	public boolean answerNotification(int appmntID, String email, String ans) throws SQLException {
+		
+		ResultSet appmnt = getAppointment(appmntID);
+		appmnt.next();
+		
+		String msg = email + " has " + ans.toLowerCase() + "ed your invitation to appointment " + appmnt.getDate(2).toString();
+		
+		String qry = "INSERT INTO notification (message, appointmentID, email) "
+				+ "VALUES ('" + msg + "', " + appmntID + ", '" + appmnt.getString(8) + "');";
+		
+		db.updateQuery(qry);
+		return true;
 	}
 
 	/**
 	 * Returns a ResultSet with all the notifications for the logged in user.
 	 * 
-	 * @param e
-	 * @return
+	 * @param Employee e
+	 * @return ResultSet
 	 */
 	public ResultSet getNotifications(Employee e) {
-		String qry = "SELECT message FROM notification N, invited_to A, employee E "
-				+ "WHERE N.appointmentID = A.appointmentID"
-				+ " AND A.email = '" + e.getEmail() + "';";
+		String qry = "SELECT notificationID, message FROM notification n "
+				+ "WHERE n.email = '" + e.getEmail() + "' "
+				+ "AND n.alarmtime IS NULL;";
 
 		return db.readQuery(qry);
 	}
 	
 	/**
+	 * Creates an alarm for a given appointment with a given time and message for the given user.
+	 * 
+	 * @param String msg
+	 * @param String time
+	 * @param int appmntID
+	 * @param String email
+	 * @return boolean
+	 */
+	public boolean createAlarm(String msg, String time, int appmntID, String email) {
+		String qry = "INSERT INTO notification (message, alarmtime, appointmentID, email) "
+				+ "VALUES ('" + msg +"', '" + time + "', " + appmntID + ", '" + email + "');";
+		
+		db.updateQuery(qry);
+		return true;
+	}
+
+	/**
 	 * Returns a ResultSet with all the alarms for the logged in user.
 	 * 
-	 * @param e
+	 * @param Employee e
 	 * @return ResultSet
 	 */
 	public ResultSet getAlarms(Employee e) {
-		String qry = "SELECT alarmtime FROM notification N, invited_to A, employee E "
-				+ "WHERE N.appointmentID = A.appointmentID"
-				+ "WHERE A.email = '" + e.getEmail() + "';";
-		
+		String qry = "SELECT n.notificationID, n.message, a.date, n.alarmtime FROM notification n, appointment a "
+				+ "WHERE n.email = '" + e.getEmail() + "' "
+				+ "AND n.alarmtime != 'null' "
+				+ "AND n.appointmentID = a.appointmentID;";
+
 		return db.readQuery(qry);
 	}
-	
+
 	/**
 	 * Returns a ResultSet with all appointments made by specific employee.
 	 * 
-	 * @param e
+	 * @param Employee e
 	 * @return ResultSet
 	 */
 	public ResultSet getAppointmentsBy(Employee e) {
@@ -112,13 +193,53 @@ public class DatabaseConnection {
 	}
 	
 	/**
+	 * Returns a ResultSet with all appointments the user has accepted.
+	 * 
+	 * @param Employee e
+	 * @return boolean
+	 */
+	public ResultSet getAcceptedAppointments(Employee e) {
+		String qry = "SELECT a.appointmentID, a.date, a.starttime FROM appointment a, invited_to i "
+				+ "WHERE a.appointmentID = i.appointmentID "
+				+ "AND i.isparticipating = 1 "
+				+ "AND i.email = '" + e.getEmail() + "';";
+		
+		return db.readQuery(qry);
+	}
+
+	/**
 	 * Returns a ResultSet with the appointment with the given appointmentID.
 	 * 
-	 * @param appmntID
+	 * @param int appmntID
 	 * @return ResultSet
 	 */
 	public ResultSet getAppointment(int appmntID) {
-		String qry = "SELECT * FROM appointment a WHERE a.appointmentID = " + appmntID + ";";
+		String qry = "SELECT * FROM appointment a WHERE a.appointmentID = "
+				+ appmntID + ";";
+
+		return db.readQuery(qry);
+	}
+	
+	/**
+	 * Returns a ResultSet with the date of the appointment.
+	 * 
+	 * @param int appmntID
+	 * @return ResultSet
+	 */
+	public ResultSet getAppointmentDate(int appmntID) {
+		String qry = "SELECT date FROM appointment WHERE appointmentID = " + appmntID + ";";
+		
+		return db.readQuery(qry);
+	}
+	
+	/**
+	 * Returns a ResultSet with the starttime of the appointment.
+	 * 
+	 * @param int appmntID
+	 * @return ResultSet
+	 */
+	public ResultSet getAppointmentStarttime(int appmntID) {
+		String qry = "SELECT starttime FROM appointment WHERE appointmentID = " + appmntID + ";";
 		
 		return db.readQuery(qry);
 	}
@@ -126,12 +247,12 @@ public class DatabaseConnection {
 	/**
 	 * Inserts new appointment into the database.
 	 * 
-	 * @param appmnt
-	 * @param empl
+	 * @param Appointment appmnt
+	 * @param Employee e
 	 * @return boolean
 	 */
 	public boolean createAppointment(Appointment appmnt, Employee e) {
-
+		boolean success = true;
 		String qry = "INSERT INTO appointment (date, starttime, endtime, duration, description, meetingroom, owner) VALUES ('"
 				+ appmnt.getDate()
 				+ "', '"
@@ -145,81 +266,118 @@ public class DatabaseConnection {
 				+ "', '"
 				+ appmnt.getLocation()
 				+ "', '" + e.getEmail() + "');";
+		
+		try {
+			int appmntID = db.insertAndGetKeysQuery(qry).get(0);
+			
+			inviteTo(e.getEmail(), appmntID);
+			confirmInvitation(e.getEmail(), appmntID);
+		} catch (SQLException ex) {
+			System.err.println(ex.getMessage());
+			success = false;
+		}
 
-		db.updateQuery(qry);
-
-		return true;
+		return success;
 	}
-	
+
 	/**
 	 * Deletes the appointment from the database,
 	 * 
-	 * @param appmntID
+	 * @param int appmntID
 	 * @return boolean
 	 */
 	public boolean deleteAppointment(int appmntID) {
-		
-		String qry = "DELETE FROM appointment WHERE appointmentID = " + appmntID + ";";
-		
+
+		String qry = "DELETE FROM appointment WHERE appointmentID = "
+				+ appmntID + ";";
+
 		db.updateQuery(qry);
-		
+
 		return true;
 	}
 
 	/**
-	 * Invites an employee to an given appointment. 
+	 * Invites an employee to an given appointment.
 	 * 
-	 * @param email
-	 * @param appmntkey
-	 * @param participates
+	 * @param String email
+	 * @param int appmntID
 	 * @return boolean
 	 */
 	public boolean inviteTo(String email, int appmntID) {
 
-		String qry = "INSERT INTO invited_to VALUES ('"
-				+ appmntID + "', '" + email + "', '0', '0');";
+		String qry = "INSERT INTO invited_to VALUES ('" + appmntID + "', '"
+				+ email + "', '0', '0');";
+
+		db.updateQuery(qry);
+		
+		try {
+			invitationNotification(appmntID, email);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return true;
+	}
+
+	/**
+	 * Removes an employee from an given appointment.
+	 * 
+	 * @param String email
+	 * @param int appmntID
+	 * @return boolean
+	 */
+	public boolean removeFrom(String email, int appmntID) {
+
+		String qry = "DELETE FROM invited_to "
+				+ "WHERE appointmentID = " + appmntID
+				+ " AND email = '" + email + "';";
 
 		db.updateQuery(qry);
 
 		return true;
 	}
-	
+
 	/**
-	 * Updates the status of the invitation so that the employee is participating.
+	 * Updates the status of the invitation so that the employee is
+	 * participating.
 	 * 
-	 * @param email
-	 * @param appmntID
+	 * @param String email
+	 * @param int appmntID
 	 * @return boolean
 	 */
 	public boolean confirmInvitation(String email, int appmntID) {
-		
-		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=1 WHERE appointment = " + appmntID + ";" ;
-		
+
+		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=1 WHERE appointmentID = "
+				+ appmntID + " AND email = '" + email + "';";
+
 		db.updateQuery(qry);
-		
+
 		return true;
 	}
+
 	/**
 	 * Updates the status of the invitation so that the employee has declined.
 	 * 
-	 * @param email
-	 * @param appmntID
+	 * @param String email
+	 * @param int appmntID
 	 * @return boolean
 	 */
 	public boolean declineInvitation(String email, int appmntID) {
-		
-		String qry = "UPDATE invited_to SET hasanswered=0, isparticipating=0 WHERE appointment = " + appmntID + ";" ;
-		
+
+		String qry = "UPDATE invited_to SET hasanswered=1, isparticipating=0 WHERE appointmentID = "
+				+ appmntID + " AND email = '" + email + "';";
+
 		db.updateQuery(qry);
-		
+
 		return true;
 	}
 
 	/**
 	 * Validates the attempted login, and creates an employee object.
 	 * 
-	 * @param username
-	 * @param pw
+	 * @param String username
+	 * @param String pw
 	 * @return Employee
 	 */
 	public Employee validateLogin(String username, String pw) {

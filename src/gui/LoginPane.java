@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 /**
@@ -15,20 +16,20 @@ import javax.swing.JTextField;
 public class LoginPane extends JPanel {
 	
 	protected static JTextField usernameField;
-	protected static JTextField pwField;
+	protected static JPasswordField pwField;
 	protected static JButton loginBtn;
 	
 	public LoginPane() {
-		usernameField = new JTextField(10);
-		pwField = new JTextField(10);
-		loginBtn = new JButton("Logg inn");
+		usernameField = new JTextField(20);
+		pwField = new JPasswordField(20);
+		loginBtn = new JButton("Log in");
 		
-		setLayout(new GridLayout(3,2));
-		add(new JLabel("Brukernavn:"));
+		setLayout(new GridLayout(3, 2, 5, 5));
+		add(new JLabel("Username:"));
 		add(usernameField);
-		add(new JLabel("Passord:"));
+		add(new JLabel("Password:"));
 		add(pwField);
-		add(new JLabel("Klikk for å logge inn"));
+		add(new JLabel("Click to log in"));
 		add(loginBtn);
 	}
 
