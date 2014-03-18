@@ -25,6 +25,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	protected static ChangeAppmntPane changeAppmntPane;
 	private static InvitationPane invitationPane;
 	protected static NotificationPane notificationPane;
+	private static WeekViewPane weekViewPane;
 	
 	private static JPanel responsePane;
 	protected static JLabel responseLabel;
@@ -62,6 +63,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		changeAppmntPane = new ChangeAppmntPane();
 		invitationPane = new InvitationPane();
 		notificationPane = new NotificationPane();
+		weekViewPane = new WeekViewPane();
 		
 		responseLabel = new JLabel();
 		responsePane = new JPanel();
@@ -357,6 +359,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
 		else if (e.getActionCommand().equals("Show week calendar")) {
 			clear();
+			add(weekViewPane, BorderLayout.CENTER);
 		}
 		
 		else if (e.getActionCommand().equals("Notifications")) {
