@@ -58,7 +58,7 @@ public class ChangeAppmntPane extends JPanel {
 		removeBtn = new JButton("Remove from appointment");
 		saveAppmntBtn = new JButton("Save appointment");
 		deleteAppmntBtn = new JButton("Delete appointment");
-		findRoomBtn = new JButton("Find room");
+		findRoomBtn = new JButton("Change room");
 		currentAppmntID = -1;
 	}
 	

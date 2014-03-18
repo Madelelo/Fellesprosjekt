@@ -56,6 +56,41 @@ public class DatabaseConnection {
 
 		return db.readQuery(qry);
 	}
+	
+	/**
+	 * Returns a ResultSet with all the booked rooms.
+	 * 
+	 * @return ResultSet
+	 */
+	public ResultSet getBookedRooms() {
+		String qry = "SELECT name, capacity, appointmentID, date, starttime, endtime, duration "
+				+ "FROM appointment a JOIN meetingroom m WHERE a.meetingroom = m.name";
+		
+		return db.readQuery(qry);
+	}
+	
+	/**
+	 * Returns a ResultSet with all rooms.
+	 * 
+	 * @return ResultSet
+	 */
+	public ResultSet getRooms() {
+		String qry = "SELECT * FROM meetingroom;";
+		
+		return db.readQuery(qry);
+	}
+	
+	/**
+	 * Returns a ResultSet with the room with the given name.
+	 * 
+	 * @param String name
+	 * @return ResultSet
+	 */
+	public ResultSet getRoom(String name) {
+		String qry = "SELECT name, capacity FROM meetingroom WHERE name = '" + name + "';";
+		
+		return db.readQuery(qry);
+	}
 
 	/**
 	 * Returns a ResultSet (with appointments) with all unanswered invitations.

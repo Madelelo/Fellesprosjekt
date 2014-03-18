@@ -410,7 +410,21 @@ public class MainFrame extends JFrame implements ActionListener {
 		setVisible(true);
 		
 		if (e.getActionCommand().equals("Find room")) {
-			new FindRoomFrame();
+			try {
+				new FindRoomFrame(FindRoomFrame.NEW_APPMNT);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		else if (e.getActionCommand().equals("Change room")) {
+			try {
+				new FindRoomFrame(FindRoomFrame.CHANGE_APPMNT);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		else if (e.getActionCommand().equals("Make new alarm")) {

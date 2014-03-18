@@ -1,6 +1,7 @@
 package model;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 
 public abstract class TimeLogic {
@@ -110,5 +111,64 @@ public abstract class TimeLogic {
 		}
 		
 		return isValid;
+	}
+	
+	public static boolean timeOverlaps(String date1, String start1, String end1, String dur1, String date2, String start2, String end2, String dur2) {
+		boolean isOverlap = false;
+		
+		int year1 = Integer.parseInt(date1.split("-")[0]);
+		int month1 = Integer.parseInt(date1.split("-")[1]);
+		int day1 = Integer.parseInt(date1.split("-")[2]);
+		int year2 = Integer.parseInt(date2.split("-")[0]);
+		int month2 = Integer.parseInt(date2.split("-")[1]);
+		int day2 = Integer.parseInt(date2.split("-")[2]);
+		
+		int startHour1 = Integer.parseInt(start1.split(":")[0]);
+		int startMin1 = Integer.parseInt(start1.split(":")[1]);
+		int endHour1 = -1;
+		int endMin1 = -1;
+		
+		int startHour2 = Integer.parseInt(start2.split(":")[0]);
+		int startMin2 = Integer.parseInt(start2.split(":")[1]);
+		int endHour2 = -1;
+		int endMin2 = -1;
+		
+		if(!dur1.isEmpty()) {
+			endHour1 = startHour1 + Integer.parseInt(dur1.split(":")[0]);
+			endMin1 = startMin1 + Integer.parseInt(dur1.split(":")[1]);
+			if(endMin1 > 59) {
+				endHour1 += 1;
+				endMin1 -= 60;
+			}
+		} else {
+			endHour1 = Integer.parseInt(end1.split(":")[0]);
+			endMin1 = Integer.parseInt(end1.split(":")[1]);
+		}
+		
+		if(!dur2.isEmpty()) {
+			endHour2 = startHour2 + Integer.parseInt(dur2.split(":")[0]);
+			endMin2 = startMin2 + Integer.parseInt(dur2.split(":")[1]);
+			if(endMin2 > 59) {
+				endHour2 += 1;
+				endMin2 -= 60;
+			}
+		} else {
+			endHour2 = Integer.parseInt(end2.split(":")[0]);
+			endMin2 = Integer.parseInt(end2.split(":")[1]);
+		}
+		
+		DateTime starttime1 = new DateTime(year1, month1, day1, startHour1, startMin1);
+		DateTime endtime1 = new DateTime(year1, month1, day1, endHour1, endMin1);
+		DateTime starttime2 = new DateTime(year2, month2, day2, startHour2, startMin2);
+		DateTime endtime2 = new DateTime(year2, month2, day2, endHour2, endMin2);
+		
+		Interval time1 = new Interval(starttime1.toInstant(), endtime1.toInstant());
+		Interval time2 = new Interval(starttime2.toInstant(), endtime2.toInstant());
+		
+		if(time1.overlaps(time2)) {
+			isOverlap = true;
+		}
+		
+		return isOverlap;
 	}
 }
