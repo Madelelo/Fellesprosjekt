@@ -186,17 +186,31 @@ public class MainFrame extends JFrame implements ActionListener {
 			String desc = NewAppmntPane.description.getText();
 			String loc = NewAppmntPane.location.getText();
 			
-			if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidTimeString(end)) {
-				responseLabel.setText("Illegal time format. Please try again.");
-			} else if(!TimeLogic.isValidDateString(date)) {
-				responseLabel.setText("Illegal date format. Please try again.");
-			} else {
-				if (db.createAppointment(new Appointment(date, start, end, dur, loc,
-						desc), loggedInAs)) {
-					responseLabel.setText("Appointment created.");
-					clear();
+			if(end.isEmpty() && !dur.isEmpty()) {
+				if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidDurationString(dur)) {
+					responseLabel.setText("Illegal time or duration format. Please try again.");
 				} else {
-					responseLabel.setText("Could not create appointment.");
+					if (db.createAppointment(new Appointment(date, start, end, dur, loc,
+							desc), loggedInAs)) {
+						responseLabel.setText("Appointment created.");
+						clear();
+					} else {
+						responseLabel.setText("Could not create appointment.");
+					}
+				}
+			} else {
+				if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidTimeString(end)) {
+					responseLabel.setText("Illegal time format. Please try again.");
+				} else if(!TimeLogic.isValidDateString(date)) {
+					responseLabel.setText("Illegal date format. Please try again.");
+				} else {
+					if (db.createAppointment(new Appointment(date, start, end, dur, loc,
+							desc), loggedInAs)) {
+						responseLabel.setText("Appointment created.");
+						clear();
+					} else {
+						responseLabel.setText("Could not create appointment.");
+					}
 				}
 			}
 		}
