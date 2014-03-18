@@ -38,7 +38,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	 */
 	public MainFrame() {
 		super("Appointment Calendar");
-		setSize(800, 500);
+		setSize(800, 600);
 		setLayout(new BorderLayout(5, 5));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 

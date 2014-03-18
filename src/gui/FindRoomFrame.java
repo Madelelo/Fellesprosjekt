@@ -47,7 +47,18 @@ public class FindRoomFrame extends JFrame implements ListSelectionListener, Acti
 		
 		init();
 		setup();
-		refresh();
+		
+		if(this.chosenPane == NEW_APPMNT) {
+			if(!MainFrame.newAppmntPane.date.getText().isEmpty() && !MainFrame.newAppmntPane.starttime.getText().isEmpty()
+					&& (!MainFrame.newAppmntPane.endtime.getText().isEmpty() || !MainFrame.newAppmntPane.duration.getText().isEmpty())) {
+				refresh();
+			}
+		} else if(this.chosenPane == CHANGE_APPMNT) {
+			if(!MainFrame.changeAppmntPane.date.getText().isEmpty() && !MainFrame.changeAppmntPane.starttime.getText().isEmpty()
+					&& (!MainFrame.changeAppmntPane.endtime.getText().isEmpty() || !MainFrame.changeAppmntPane.duration.getText().isEmpty())) {
+				refresh();
+			}
+		}
 		
 		setVisible(true);
 	}
@@ -82,6 +93,8 @@ public class FindRoomFrame extends JFrame implements ListSelectionListener, Acti
 		String end = "";
 		String dur = "";
 		
+		int invited = -1;
+		
 		if(chosenPane == NEW_APPMNT) {
 			
 			date = MainFrame.newAppmntPane.date.getText();
@@ -96,10 +109,13 @@ public class FindRoomFrame extends JFrame implements ListSelectionListener, Acti
 			end = MainFrame.changeAppmntPane.endtime.getText();
 			dur = MainFrame.changeAppmntPane.duration.getText();
 			
+			ResultSet invitedCount = MainFrame.db.getInvitedCount(MainFrame.changeAppmntPane.getCurrenAppmntID());
+			invitedCount.next();
+			invited = invitedCount.getInt(1);
 		}
 		
 		while(allRooms.next()) {
-			if(!availableRooms.contains(allRooms.getString(1))) {
+			if(!availableRooms.contains(allRooms.getString(1)) && invited <= allRooms.getInt(2)) {
 				availableRooms.add(allRooms.getString(1));
 			}
 		}

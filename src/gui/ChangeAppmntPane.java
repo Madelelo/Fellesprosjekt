@@ -52,6 +52,7 @@ public class ChangeAppmntPane extends JPanel {
 		endtime = new JTextField();
 		duration = new JTextField();
 		location = new JTextField();
+		location.setEditable(false);
 		description = new JTextField();
 		chooseAppmntBtn = new JButton("Pick appointment");
 		inviteBtn = new JButton("Invite to appointment");

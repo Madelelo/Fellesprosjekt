@@ -57,6 +57,13 @@ public class DatabaseConnection {
 		return db.readQuery(qry);
 	}
 	
+	public ResultSet getInvitedCount(int appmntID) {
+		
+		String qry = "SELECT COUNT(appointmentID) AS numberOfInvited FROM invited_to WHERE appointmentID = " + appmntID +";";
+		
+		return db.readQuery(qry);
+	}
+	
 	/**
 	 * Returns a ResultSet with all the booked rooms.
 	 * 
@@ -136,14 +143,17 @@ public class DatabaseConnection {
 		
 		ResultSet appmnt = getAppointment(appmntID);
 		appmnt.next();
+		
+		if(!appmnt.getString(8).equals(email)) {
 
-		String msg = "You have been invited to an appointment " + appmnt.getDate(2).toString() + ", by "
-				+ appmnt.getString(8);
-		
-		String qry = "INSERT INTO notification (message, appointmentID, email) "
-				+ "VALUES ('" + msg + "', " + appmntID + ", '" + email +"');";
-		
-		db.updateQuery(qry);
+			String msg = "You have been invited to an appointment " + appmnt.getDate(2).toString() + ", by "
+					+ appmnt.getString(8);
+			
+			String qry = "INSERT INTO notification (message, appointmentID, email) "
+					+ "VALUES ('" + msg + "', " + appmntID + ", '" + email +"');";
+			
+			db.updateQuery(qry);
+		}
 		return true;
 	}
 	
