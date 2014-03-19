@@ -17,6 +17,11 @@ import javax.swing.JTextField;
 import model.Appointment;
 import model.EmailLogic;
 
+/**
+ * 
+ * JFrame that holds the GUI for inviting external users by email.
+ *
+ */
 public class EmailFrame extends JFrame implements ActionListener {
 	
 	private static JTextField email;

@@ -11,7 +11,15 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
  
 public class EmailLogic {
- 
+	
+	/**
+	 * Creates and send an e-mail to the given e-mail adress with the given adress.
+	 * The e-mail is sendt from the account fellesprosjekt.gruppe40@gmail.com.
+	 * 
+	 * @param String toEmail
+	 * @param String messageString
+	 * @param Appointment a
+	 */
 	public static void sendEmail(String toEmail, String messageString, Appointment a) {
  
 		final String username = "fellesprosjekt.gruppe40@gmail.com";

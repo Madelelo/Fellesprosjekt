@@ -112,6 +112,12 @@ public class ChangeAppmntPane extends JPanel {
 		add(midPane, BorderLayout.CENTER);
 	}
 	
+	/**
+	 * Puts the values from the appointment into the text fields.
+	 * 
+	 * @param ResultSet appmnt
+	 * @throws SQLException
+	 */
 	public void putValues(ResultSet appmnt) throws SQLException {
 		appmnt.next();
 		currentAppmntID = appmnt.getInt(1);
@@ -196,6 +202,12 @@ public class ChangeAppmntPane extends JPanel {
 		notInvitedList.setModel(listModel);
 	}
 	
+	/**
+	 * Returns the appointmentID to the current selected appointment.
+	 * Returns -1 if no appointment is selected.
+	 * 
+	 * @return
+	 */
 	public int getCurrenAppmntID() {
 		return currentAppmntID;
 	}
