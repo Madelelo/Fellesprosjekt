@@ -110,8 +110,12 @@ public class FindRoomFrame extends JFrame implements ListSelectionListener, Acti
 			dur = MainFrame.changeAppmntPane.duration.getText();
 			
 			ResultSet invitedCount = MainFrame.db.getInvitedCount(MainFrame.changeAppmntPane.getCurrenAppmntID());
+			ResultSet externalInvitedCount = MainFrame.db.getExternalInvitedCount(MainFrame.changeAppmntPane.getCurrenAppmntID());
 			invitedCount.next();
+			externalInvitedCount.next();
 			invited = invitedCount.getInt(1);
+			invited += externalInvitedCount.getInt(1);
+			System.out.println(invited);
 		}
 		
 		while(allRooms.next()) {

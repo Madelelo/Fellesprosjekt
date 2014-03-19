@@ -39,6 +39,20 @@ public class DatabaseConnection {
 		
 		return db.readQuery(qry);
 	}
+	
+	/**
+	 * Returns a ResultSet with all the external employees invited to an appointment.
+	 * 
+	 * @param int appmntID
+	 * @return ResultSet
+	 */
+	public ResultSet getInvitedExternalEmployees(int appmntID) {
+		
+		String qry = "SELECT e.email FROM external_employee e "
+				+ "WHERE e.appointmentID = " + appmntID + ";";
+		
+		return db.readQuery(qry);
+	}
 
 	/**
 	 * Returns a ResultSet with all the employees NOT invited to an appointment.
@@ -57,9 +71,28 @@ public class DatabaseConnection {
 		return db.readQuery(qry);
 	}
 	
+	/**
+	 * Returns the number of employees invited to an given appointment.
+	 * 
+	 * @param int appmntID
+	 * @return ResultSet
+	 */
 	public ResultSet getInvitedCount(int appmntID) {
 		
 		String qry = "SELECT COUNT(appointmentID) AS numberOfInvited FROM invited_to WHERE appointmentID = " + appmntID +";";
+		
+		return db.readQuery(qry);
+	}
+	
+	/**
+	 * Returns the number of external employees invited to an given appointment.
+	 * 
+	 * @param appmntID
+	 * @return
+	 */
+	public ResultSet getExternalInvitedCount(int appmntID) {
+		
+		String qry = "SELECT COUNT(appointmentID) AS numberOfInvited FROM external_employee WHERE appointmentID = " + appmntID +";";
 		
 		return db.readQuery(qry);
 	}
@@ -95,6 +128,20 @@ public class DatabaseConnection {
 	 */
 	public ResultSet getRoom(String name) {
 		String qry = "SELECT name, capacity FROM meetingroom WHERE name = '" + name + "';";
+		
+		return db.readQuery(qry);
+	}
+	
+	/**
+	 * Returns a ResultSet with the room associated with the given appointmentID.
+	 * 
+	 * @param appmntID
+	 * @return ResultSet
+	 */
+	public ResultSet getRoom(int appmntID) {
+		String qry = "SELECT m.capacity FROM appointment a, meetingroom m "
+				+ "WHERE a.meetingroom = m.name "
+				+ "AND a.appointmentID = " + appmntID + ";";
 		
 		return db.readQuery(qry);
 	}
@@ -400,6 +447,32 @@ public class DatabaseConnection {
 
 		return true;
 	}
+	
+	/**
+	 * Invites an external employee to an given appointment.
+	 * 
+	 * @param String email
+	 * @param int appmntID
+	 * @return boolean
+	 */
+	public boolean inviteExternal(String email, int appmntID) {
+		
+		String qry = "INSERT INTO external_employee VALUES(" + appmntID + ", '" + email + "');";
+		db.updateQuery(qry);
+		
+		return true;
+	}
+	
+	public boolean removeExternal(String email, int appmntID) {
+		
+		String qry = "DELETE FROM external_employee "
+				+ "WHERE appointmentID = " + appmntID
+				+ " AND email = '" + email + "';";
+		
+		db.updateQuery(qry);
+		
+		return true;
+	}
 
 	/**
 	 * Removes an employee from an given appointment.
@@ -497,6 +570,31 @@ public class DatabaseConnection {
 		}
 
 		return connected;
+	}
+	
+	public boolean hasCapacity(int appmntID) {
+		boolean hasCapacity = false;
+		
+		ResultSet invitedCount = getInvitedCount(appmntID);
+		ResultSet invitedExternalCount = getExternalInvitedCount(appmntID);
+		ResultSet room = getRoom(appmntID);
+		try {
+			invitedCount.next();
+			invitedExternalCount.next();
+			room.next();
+			
+			int invited = invitedCount.getInt(1) + invitedExternalCount.getInt(1);
+			
+			if(invited < room.getInt(1)) {
+				hasCapacity = true;
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return hasCapacity;
 	}
 
 }

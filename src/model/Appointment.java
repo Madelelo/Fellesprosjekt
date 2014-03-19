@@ -11,6 +11,7 @@ public class Appointment {
 	private String duration;
 	private String location;
 	private String description;
+	private String owner;
 	public List<Employee> participants;
 	
 	/**
@@ -38,6 +39,12 @@ public class Appointment {
 		setDuration(duration);
 		setLocation(location);
 		setDescription(description);
+	}
+	
+	public Appointment(String date, String starttime, String owner) {
+		setDate(date);
+		setStarttime(starttime);
+		setOwner(owner);
 	}
 	
 	public void setDate(String date) {
@@ -113,6 +120,14 @@ public class Appointment {
 	
 	public int getAppointmentID() {
 		return appID;
+	}
+	
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	
+	public String getOwner() {
+		return owner;
 	}
 
 }

@@ -97,6 +97,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		ChangeAppmntPane.deleteAppmntBtn.addActionListener(this);
 		ChangeAppmntPane.chooseAppmntBtn.addActionListener(this);
 		ChangeAppmntPane.findRoomBtn.addActionListener(this);
+		changeAppmntPane.inviteExternalBtn.addActionListener(this);
 		
 		InvitationPane.acceptBtn.addActionListener(this);
 		InvitationPane.declineBtn.addActionListener(this);
@@ -151,6 +152,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		changeAppmntPane.clearValues();
 		remove(invitationPane);
 		remove(notificationPane);
+		remove(weekViewPane);
 	}
 	
 	/**
@@ -294,32 +296,53 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if (e.getActionCommand().equals("Invite to appointment")) {
-			String email = ChangeAppmntPane.notInvitedList.getSelectedValue();
-			if(email != null) {
-				int appmntID = changeAppmntPane.getCurrenAppmntID();
-				db.inviteTo(email, appmntID);
-				responseLabel.setText("User invited to appointment.");
-				try {
-					changeAppmntPane.refreshInviteList();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+			if(!ChangeAppmntPane.notInvitedList.isSelectionEmpty()) {
+				String email = ChangeAppmntPane.notInvitedList.getSelectedValue();
+				if(email != null) {
+					int appmntID = changeAppmntPane.getCurrenAppmntID();
+					
+					if(db.hasCapacity(appmntID)) {
+						db.inviteTo(email, appmntID);
+						responseLabel.setText("User invited to appointment.");
+						try {
+							changeAppmntPane.refreshInviteList();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					} else {
+						responseLabel.setText("Meetingroom don't have the capacity. Please change meetingroom if possible.");
+					}
 				}
+			} else {
+				responseLabel.setText("Please select a user first.");
 			}
 		}
 		
 		else if (e.getActionCommand().equals("Remove from appointment")) {
-			String email = ChangeAppmntPane.invitedList.getSelectedValue().split(" ")[0];
-			if(email != null) {
+			if(!ChangeAppmntPane.invitedList.isSelectionEmpty()) {
+				String email = ChangeAppmntPane.invitedList.getSelectedValue().split(" ")[0];
+				String status = ChangeAppmntPane.invitedList.getSelectedValue().split(" ")[1];
 				int appmntID = changeAppmntPane.getCurrenAppmntID();
-				db.removeFrom(email, appmntID);
-				responseLabel.setText("User removed from appointment.");
+				
+				if(status.equals("(External)")) {
+					db.removeExternal(email, appmntID);
+					responseLabel.setText("External employee removed from appointment.");
+				} else {
+					if(email != null) {
+						db.removeFrom(email, appmntID);
+						responseLabel.setText("User removed from appointment.");
+					}
+				}
+				
 				try {
 					changeAppmntPane.refreshInviteList();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			} else {
+				responseLabel.setText("Please select a user first.");
 			}
 		}
 		
@@ -449,6 +472,18 @@ public class MainFrame extends JFrame implements ActionListener {
 				e1.printStackTrace();
 			}
 		}
+		
+		else if (e.getActionCommand().equals("Invite external employee")) {
+			if(db.hasCapacity(changeAppmntPane.getCurrenAppmntID())) {
+				String date = changeAppmntPane.date.getText();
+				String start = changeAppmntPane.starttime.getText();
+				String owner = loggedInAs.getEmail();
+				
+				Appointment a = new Appointment(date, start, owner);
+				new EmailFrame(a);
+			} else {
+				responseLabel.setText("Meetingroom don't have the capacity. Please change meetingroom if possible.");
+			}
+		}
 	}
-
 }
