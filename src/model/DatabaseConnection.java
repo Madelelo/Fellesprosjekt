@@ -208,7 +208,20 @@ public class DatabaseConnection {
 	 * @throws SQLException
 	 */
 	public void updateNotification(int appmntID, String email) throws SQLException {
-
+		
+		ResultSet appmnt = getAppointment(appmntID);
+		appmnt.next();
+		
+		if(!appmnt.getString(8).equals(email)) {
+			
+			String msg = "Changes have been made to an appointment " + appmnt.getDate(2).toString() + ", by "
+					+ appmnt.getString(8);
+			
+			String qry = "INSERT INTO notification (message, appointmentID, email) "
+					+ "VALUES ('" + msg + "', " + appmntID + ", '" + email + "');";
+			
+			db.updateQuery(qry);
+		}
 	}
 	
 	/**
@@ -219,7 +232,20 @@ public class DatabaseConnection {
 	 * @throws SQLException
 	 */
 	public void deleteNotification(int appmntID, String email) throws SQLException {
-
+		
+		ResultSet appmnt = getAppointment(appmntID);
+		appmnt.next();
+		
+		if(!appmnt.getString(8).equals(email)) {
+			
+			String msg = "An appointment " + appmnt.getDate(2).toString() + " have been deleted by "
+					+ appmnt.getString(8);
+			
+			String qry = "INSERT INTO notification (message, appointmentID, email) "
+					+ "VALUES ('" + msg + "', " + appmntID + ", '" + email + "');";
+			
+			db.updateQuery(qry);
+		}
 	}
 	
 	/**

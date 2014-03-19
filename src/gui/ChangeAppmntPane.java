@@ -59,6 +59,7 @@ public class ChangeAppmntPane extends JPanel {
 		description = new JTextField();
 		invitedList = new JList<String>();
 		notInvitedList = new JList<String>();
+		appmntList = new JList<String>();
 		chooseAppmntBtn = new JButton("Pick appointment");
 		inviteBtn = new JButton("Invite to appointment");
 		removeBtn = new JButton("Remove from appointment");
@@ -70,23 +71,16 @@ public class ChangeAppmntPane extends JPanel {
 	}
 	
 	public void setup() throws SQLException {
-		
-		DefaultListModel<String> listModel = new DefaultListModel<String>();
-		ResultSet appmnts = MainFrame.db.getAppointmentsBy(MainFrame.loggedInAs);
-		if (appmnts != null) {
-			while(appmnts.next()) {
-				String avtale = "Appointment: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
-				listModel.addElement(avtale);
-			}
-		}
-		appmntList = new JList<String>(listModel);
 		appmntList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		appmntList.setLayoutOrientation(JList.VERTICAL);
+		invitedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		invitedList.setLayoutOrientation(JList.VERTICAL);
+		notInvitedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		notInvitedList.setLayoutOrientation(JList.VERTICAL);
 		
 		setLayout(new BorderLayout(5, 5));
 		topPane.setLayout(new GridLayout(1, 2, 5, 5));
 		midPane.setLayout(new GridLayout(8, 2, 5, 5));
-		bottomPane.setLayout(new GridLayout(3, 3, 5, 5));
 		
 		topPane.add(appmntList);
 		topPane.add(chooseAppmntBtn);
@@ -110,6 +104,8 @@ public class ChangeAppmntPane extends JPanel {
 		
 		add(topPane, BorderLayout.NORTH);
 		add(midPane, BorderLayout.CENTER);
+		
+		refresh();
 	}
 	
 	/**

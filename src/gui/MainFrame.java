@@ -247,9 +247,9 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if (e.getActionCommand().equals("Delete appointment")) {
-			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
-			if(appmnt != null) {
-				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
+			int appmntID = changeAppmntPane.getCurrenAppmntID();
+			if(appmntID != -1) {
+				NotificationLogic.sendDeleteNotifications(appmntID, db);
 				db.deleteAppointment(appmntID);
 				responseLabel.setText("Appointment deleted.");
 				changeAppmntPane.clearValues();
@@ -263,20 +263,23 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if (e.getActionCommand().equals("Save appointment")) {
-			if(changeAppmntPane.getCurrenAppmntID() != -1) {
+			int appmntID = changeAppmntPane.getCurrenAppmntID();
+			
+			if(appmntID != -1) {
 				String start = ChangeAppmntPane.starttime.getText();
 				String end = ChangeAppmntPane.endtime.getText();
 				String date = ChangeAppmntPane.date.getText();
 				String dur = ChangeAppmntPane.duration.getText();
 				String desc = ChangeAppmntPane.description.getText();
 				String loc = ChangeAppmntPane.location.getText();
-				Appointment appmnt = new Appointment(changeAppmntPane.getCurrenAppmntID(), date, start, end, dur, loc, desc);
+				Appointment appmnt = new Appointment(appmntID, date, start, end, dur, loc, desc);
 				
 				if(end.isEmpty() && !dur.isEmpty()) {
 					if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidDurationString(dur)) {
 						responseLabel.setText("Illegal time or duration format. Please try again.");
 					} else {
 						db.updateAppointment(appmnt);
+						NotificationLogic.sendUpdateNotifications(appmntID, db);
 						responseLabel.setText("Appointment updated.");
 					}
 				} else {
@@ -286,6 +289,7 @@ public class MainFrame extends JFrame implements ActionListener {
 						responseLabel.setText("Illegal date format. Please try again.");
 					} else {
 						db.updateAppointment(appmnt);
+						NotificationLogic.sendUpdateNotifications(appmntID, db);
 						responseLabel.setText("Appointment updated.");
 					}
 				}

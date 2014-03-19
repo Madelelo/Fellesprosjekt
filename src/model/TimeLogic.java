@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 
-public abstract class TimeLogic {
+public class TimeLogic {
 	
 	public static boolean isValidAlarmTime(String alarmTime, String appmntDate, String appmntTime) {
 		boolean isValid = false;
