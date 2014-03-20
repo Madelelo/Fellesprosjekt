@@ -1,5 +1,7 @@
 package gui;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,10 +23,12 @@ public class InvitationPane extends JPanel {
 	protected static JList<String> invitationList;
 	protected static JButton acceptBtn;
 	protected static JButton declineBtn;
+	private static JPanel buttonPane;
 	
 	public InvitationPane() {
 		acceptBtn = new JButton("Accept");
 		declineBtn = new JButton("Decline");
+		buttonPane = new JPanel(new GridLayout(1, 2, 5, 5));
 	}
 	
 	public void setup() throws SQLException {
@@ -38,11 +42,13 @@ public class InvitationPane extends JPanel {
 		invitationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		invitationList.setLayoutOrientation(JList.VERTICAL);
 		
-		setLayout(new GridLayout(2, 2, 5, 5));
-		add(new JLabel("Choose invitation:"));
-		add(invitationList);
-		add(acceptBtn);
-		add(declineBtn);
+		setLayout(new BorderLayout());
+		add(new JLabel("Choose invitation:"), BorderLayout.NORTH);
+		add(invitationList, BorderLayout.CENTER);
+		buttonPane.add(acceptBtn);
+		buttonPane.add(declineBtn);
+		add(buttonPane, BorderLayout.SOUTH);
+		buttonPane.setPreferredSize(new Dimension(400, 100));
 		
 	}
 	

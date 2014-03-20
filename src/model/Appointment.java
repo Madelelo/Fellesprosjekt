@@ -11,6 +11,7 @@ public class Appointment {
 	private String duration;
 	private String location;
 	private String description;
+	private String owner;
 	public List<Employee> participants;
 	
 	/**
@@ -30,13 +31,20 @@ public class Appointment {
 		setDescription(description);
 	}
 	
-	public Appointment(int id, String date, String starttime, String endtime, String location, String description) {
+	public Appointment(int id, String date, String starttime, String endtime, String duration, String location, String description) {
 		appID = id;
 		setDate(date);
 		setStarttime(starttime);
 		setEndtime(endtime);
+		setDuration(duration);
 		setLocation(location);
 		setDescription(description);
+	}
+	
+	public Appointment(String date, String starttime, String owner) {
+		setDate(date);
+		setStarttime(starttime);
+		setOwner(owner);
 	}
 	
 	public void setDate(String date) {
@@ -108,6 +116,18 @@ public class Appointment {
 	
 	public String getDescription() {
 		return description;
+	}
+	
+	public int getAppointmentID() {
+		return appID;
+	}
+	
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	
+	public String getOwner() {
+		return owner;
 	}
 
 }

@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
@@ -35,6 +37,7 @@ public class ChangeAppmntPane extends JPanel {
 	protected static JButton saveAppmntBtn;
 	protected static JButton deleteAppmntBtn;
 	protected static JButton findRoomBtn;
+	protected static JButton inviteExternalBtn;
 	private static JPanel topPane;
 	private static JPanel midPane;
 	private static JPanel bottomPane;
@@ -52,34 +55,32 @@ public class ChangeAppmntPane extends JPanel {
 		endtime = new JTextField();
 		duration = new JTextField();
 		location = new JTextField();
+		location.setEditable(false);
 		description = new JTextField();
+		invitedList = new JList<String>();
+		notInvitedList = new JList<String>();
+		appmntList = new JList<String>();
 		chooseAppmntBtn = new JButton("Pick appointment");
 		inviteBtn = new JButton("Invite to appointment");
 		removeBtn = new JButton("Remove from appointment");
 		saveAppmntBtn = new JButton("Save appointment");
 		deleteAppmntBtn = new JButton("Delete appointment");
-		findRoomBtn = new JButton("Find room");
+		findRoomBtn = new JButton("Change room");
+		inviteExternalBtn = new JButton("Invite external employee");
 		currentAppmntID = -1;
 	}
 	
 	public void setup() throws SQLException {
-		
-		DefaultListModel<String> listModel = new DefaultListModel<String>();
-		ResultSet appmnts = MainFrame.db.getAppointmentsBy(MainFrame.loggedInAs);
-		if (appmnts != null) {
-			while(appmnts.next()) {
-				String avtale = "Appointment: " + appmnts.getString(2) + ", " + appmnts.getString(3) + ", ID: " + appmnts.getString(1);
-				listModel.addElement(avtale);
-			}
-		}
-		appmntList = new JList<String>(listModel);
 		appmntList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		appmntList.setLayoutOrientation(JList.VERTICAL);
+		invitedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		invitedList.setLayoutOrientation(JList.VERTICAL);
+		notInvitedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		notInvitedList.setLayoutOrientation(JList.VERTICAL);
 		
 		setLayout(new BorderLayout(5, 5));
 		topPane.setLayout(new GridLayout(1, 2, 5, 5));
 		midPane.setLayout(new GridLayout(8, 2, 5, 5));
-		bottomPane.setLayout(new GridLayout(2, 3, 5, 5));
 		
 		topPane.add(appmntList);
 		topPane.add(chooseAppmntBtn);
@@ -103,41 +104,22 @@ public class ChangeAppmntPane extends JPanel {
 		
 		add(topPane, BorderLayout.NORTH);
 		add(midPane, BorderLayout.CENTER);
+		
+		refresh();
 	}
 	
+	/**
+	 * Puts the values from the appointment into the text fields.
+	 * 
+	 * @param ResultSet appmnt
+	 * @throws SQLException
+	 */
 	public void putValues(ResultSet appmnt) throws SQLException {
 		appmnt.next();
 		currentAppmntID = appmnt.getInt(1);
 		remove(bottomPane);
-		bottomPane = new JPanel(new GridLayout(2,3));
-		
-		DefaultListModel<String> listModel = new DefaultListModel<String>();
-		ResultSet invited = MainFrame.db.getInvitedEmployees(currentAppmntID);
-		if (invited != null) {	
-			while(invited.next()) {
-				String ansatt = invited.getString(1);
-				if(!invited.getBoolean(2)) {ansatt += " (Unanswered)";}
-				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Accepted)";}
-				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Declined)";}
-				listModel.addElement(ansatt);
-			}
-		}
-		invitedList = new JList<String>(listModel);
-		invitedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		invitedList.setLayoutOrientation(JList.VERTICAL);
-		
-		listModel = new DefaultListModel<String>();
-		ResultSet notInvited = MainFrame.db.getUninvitedEmployees(currentAppmntID);
-		if (notInvited != null) {
-			while(notInvited.next()) {
-				String ansatt = notInvited.getString(1);
-				listModel.addElement(ansatt);
-			}
-		}
-		notInvitedList = new JList<String>(listModel);
-		notInvitedList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		notInvitedList.setLayoutOrientation(JList.VERTICAL);
-		notInvitedList.setBackground(Color.LIGHT_GRAY);
+		bottomPane = new JPanel(new GridLayout(3, 3, 5, 5));
+		bottomPane.setPreferredSize(new Dimension(500, 200));
 		
 		date.setText(appmnt.getDate(2).toString());
 		starttime.setText(appmnt.getTime(3).toString());
@@ -151,12 +133,17 @@ public class ChangeAppmntPane extends JPanel {
 		location.setText(appmnt.getString(7).toString());
 		
 		bottomPane.add(new JLabel("Invited employees:"));
-		bottomPane.add(invitedList);
+		bottomPane.add(new JScrollPane(invitedList));
 		bottomPane.add(removeBtn);
 		bottomPane.add(new JLabel("Uninvited employees:"));
-		bottomPane.add(notInvitedList);
+		bottomPane.add(new JScrollPane(notInvitedList));
 		bottomPane.add(inviteBtn);
+		bottomPane.add(inviteExternalBtn);
+		bottomPane.add(new JLabel(""));
+		bottomPane.add(new JLabel(""));
 		add(bottomPane, BorderLayout.SOUTH);
+		
+		refreshInviteList();
 	}
 	
 	public void clearValues() {
@@ -184,6 +171,7 @@ public class ChangeAppmntPane extends JPanel {
 	public void refreshInviteList() throws SQLException {
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		ResultSet invited = MainFrame.db.getInvitedEmployees(currentAppmntID);
+		ResultSet invitedExternal = MainFrame.db.getInvitedExternalEmployees(currentAppmntID);
 		if(invited != null) {
 			while(invited.next()) {
 				String ansatt = invited.getString(1);
@@ -191,7 +179,11 @@ public class ChangeAppmntPane extends JPanel {
 				else if(invited.getBoolean(2) && invited.getBoolean(3)) {ansatt += " (Accepted)";}
 				else if((invited.getBoolean(2)) && !(invited.getBoolean(3))) {ansatt += " (Declined)";}
 				listModel.addElement(ansatt);
-			}	
+			}
+			while(invitedExternal.next()) {
+				String ekstern = invitedExternal.getString(1) + " (External)";
+				listModel.addElement(ekstern);
+			}
 		}
 		invitedList.setModel(listModel);
 		
@@ -206,6 +198,12 @@ public class ChangeAppmntPane extends JPanel {
 		notInvitedList.setModel(listModel);
 	}
 	
+	/**
+	 * Returns the appointmentID to the current selected appointment.
+	 * Returns -1 if no appointment is selected.
+	 * 
+	 * @return
+	 */
 	public int getCurrenAppmntID() {
 		return currentAppmntID;
 	}

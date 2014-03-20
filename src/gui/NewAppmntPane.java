@@ -37,6 +37,7 @@ public class NewAppmntPane extends JPanel {
 		endtime = new JTextField();
 		duration = new JTextField();
 		location = new JTextField();
+		location.setEditable(false);
 		description = new JTextField();
 		newAppmntBtn = new JButton("Create appointment");
 		findRoomBtn = new JButton("Find room");
