@@ -25,6 +25,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	protected static ChangeAppmntPane changeAppmntPane;
 	private static InvitationPane invitationPane;
 	protected static NotificationPane notificationPane;
+	private static WeekViewPane weekViewPane;
 	
 	private static JPanel responsePane;
 	protected static JLabel responseLabel;
@@ -38,7 +39,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	 */
 	public MainFrame() {
 		super("Appointment Calendar");
-		setSize(800, 500);
+		setSize(800, 600);
 		setLayout(new BorderLayout(5, 5));
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -62,6 +63,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		changeAppmntPane = new ChangeAppmntPane();
 		invitationPane = new InvitationPane();
 		notificationPane = new NotificationPane();
+		weekViewPane = new WeekViewPane();
 		
 		responseLabel = new JLabel();
 		responsePane = new JPanel();
@@ -95,6 +97,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		ChangeAppmntPane.deleteAppmntBtn.addActionListener(this);
 		ChangeAppmntPane.chooseAppmntBtn.addActionListener(this);
 		ChangeAppmntPane.findRoomBtn.addActionListener(this);
+		changeAppmntPane.inviteExternalBtn.addActionListener(this);
 		
 		InvitationPane.acceptBtn.addActionListener(this);
 		InvitationPane.declineBtn.addActionListener(this);
@@ -149,6 +152,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		changeAppmntPane.clearValues();
 		remove(invitationPane);
 		remove(notificationPane);
+		remove(weekViewPane);
 	}
 	
 	/**
@@ -243,9 +247,9 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if (e.getActionCommand().equals("Delete appointment")) {
-			String appmnt = ChangeAppmntPane.appmntList.getSelectedValue();
-			if(appmnt != null) {
-				int appmntID = Integer.parseInt(appmnt.split("ID: ")[1]);
+			int appmntID = changeAppmntPane.getCurrenAppmntID();
+			if(appmntID != -1) {
+				NotificationLogic.sendDeleteNotifications(appmntID, db);
 				db.deleteAppointment(appmntID);
 				responseLabel.setText("Appointment deleted.");
 				changeAppmntPane.clearValues();
@@ -259,20 +263,35 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if (e.getActionCommand().equals("Save appointment")) {
-			if(changeAppmntPane.getCurrenAppmntID() != -1) {
+			int appmntID = changeAppmntPane.getCurrenAppmntID();
+			
+			if(appmntID != -1) {
 				String start = ChangeAppmntPane.starttime.getText();
 				String end = ChangeAppmntPane.endtime.getText();
 				String date = ChangeAppmntPane.date.getText();
 				String dur = ChangeAppmntPane.duration.getText();
 				String desc = ChangeAppmntPane.description.getText();
 				String loc = ChangeAppmntPane.location.getText();
+				Appointment appmnt = new Appointment(appmntID, date, start, end, dur, loc, desc);
 				
-				if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidTimeString(end)) {
-					responseLabel.setText("Illegal time format. Please try again.");
-				} else if(!TimeLogic.isValidDateString(date)) {
-					responseLabel.setText("Illegal date format. Please try again.");
+				if(end.isEmpty() && !dur.isEmpty()) {
+					if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidDurationString(dur)) {
+						responseLabel.setText("Illegal time or duration format. Please try again.");
+					} else {
+						db.updateAppointment(appmnt);
+						NotificationLogic.sendUpdateNotifications(appmntID, db);
+						responseLabel.setText("Appointment updated.");
+					}
 				} else {
-					
+					if(!TimeLogic.isValidTimeString(start) || !TimeLogic.isValidTimeString(end)) {
+						responseLabel.setText("Illegal time format. Please try again.");
+					} else if(!TimeLogic.isValidDateString(date)) {
+						responseLabel.setText("Illegal date format. Please try again.");
+					} else {
+						db.updateAppointment(appmnt);
+						NotificationLogic.sendUpdateNotifications(appmntID, db);
+						responseLabel.setText("Appointment updated.");
+					}
 				}
 			} else {
 				responseLabel.setText("You have to pick an appointment first!");
@@ -281,32 +300,53 @@ public class MainFrame extends JFrame implements ActionListener {
 		}
 		
 		else if (e.getActionCommand().equals("Invite to appointment")) {
-			String email = ChangeAppmntPane.notInvitedList.getSelectedValue();
-			if(email != null) {
-				int appmntID = changeAppmntPane.getCurrenAppmntID();
-				db.inviteTo(email, appmntID);
-				responseLabel.setText("User invited to appointment.");
-				try {
-					changeAppmntPane.refreshInviteList();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+			if(!ChangeAppmntPane.notInvitedList.isSelectionEmpty()) {
+				String email = ChangeAppmntPane.notInvitedList.getSelectedValue();
+				if(email != null) {
+					int appmntID = changeAppmntPane.getCurrenAppmntID();
+					
+					if(db.hasCapacity(appmntID)) {
+						db.inviteTo(email, appmntID);
+						responseLabel.setText("User invited to appointment.");
+						try {
+							changeAppmntPane.refreshInviteList();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					} else {
+						responseLabel.setText("Meetingroom don't have the capacity. Please change meetingroom if possible.");
+					}
 				}
+			} else {
+				responseLabel.setText("Please select a user first.");
 			}
 		}
 		
 		else if (e.getActionCommand().equals("Remove from appointment")) {
-			String email = ChangeAppmntPane.invitedList.getSelectedValue().split(" ")[0];
-			if(email != null) {
+			if(!ChangeAppmntPane.invitedList.isSelectionEmpty()) {
+				String email = ChangeAppmntPane.invitedList.getSelectedValue().split(" ")[0];
+				String status = ChangeAppmntPane.invitedList.getSelectedValue().split(" ")[1];
 				int appmntID = changeAppmntPane.getCurrenAppmntID();
-				db.removeFrom(email, appmntID);
-				responseLabel.setText("User removed from appointment.");
+				
+				if(status.equals("(External)")) {
+					db.removeExternal(email, appmntID);
+					responseLabel.setText("External employee removed from appointment.");
+				} else {
+					if(email != null) {
+						db.removeFrom(email, appmntID);
+						responseLabel.setText("User removed from appointment.");
+					}
+				}
+				
 				try {
 					changeAppmntPane.refreshInviteList();
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+			} else {
+				responseLabel.setText("Please select a user first.");
 			}
 		}
 		
@@ -357,6 +397,7 @@ public class MainFrame extends JFrame implements ActionListener {
 
 		else if (e.getActionCommand().equals("Show week calendar")) {
 			clear();
+			add(weekViewPane, BorderLayout.CENTER);
 		}
 		
 		else if (e.getActionCommand().equals("Notifications")) {
@@ -410,7 +451,21 @@ public class MainFrame extends JFrame implements ActionListener {
 		setVisible(true);
 		
 		if (e.getActionCommand().equals("Find room")) {
-			new FindRoomFrame();
+			try {
+				new FindRoomFrame(FindRoomFrame.NEW_APPMNT);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+		else if (e.getActionCommand().equals("Change room")) {
+			try {
+				new FindRoomFrame(FindRoomFrame.CHANGE_APPMNT);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
 		else if (e.getActionCommand().equals("Make new alarm")) {
@@ -421,6 +476,18 @@ public class MainFrame extends JFrame implements ActionListener {
 				e1.printStackTrace();
 			}
 		}
+		
+		else if (e.getActionCommand().equals("Invite external employee")) {
+			if(db.hasCapacity(changeAppmntPane.getCurrenAppmntID())) {
+				String date = changeAppmntPane.date.getText();
+				String start = changeAppmntPane.starttime.getText();
+				String owner = loggedInAs.getEmail();
+				
+				Appointment a = new Appointment(date, start, owner);
+				new EmailFrame(a);
+			} else {
+				responseLabel.setText("Meetingroom don't have the capacity. Please change meetingroom if possible.");
+			}
+		}
 	}
-
 }
