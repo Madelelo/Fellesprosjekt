@@ -25,7 +25,7 @@ public class MenuPane extends JPanel {
 		newAppmntBtn = new JButton("New appointment");
 		changeAppmntBtn = new JButton("Change appointment");
 		invitationBtn = new JButton("Invitations");
-		weekBtn = new JButton("Show week calendar");
+		weekBtn = new JButton("Show calendar");
 		alarmBtn = new JButton("Notifications");
 		logoutBtn = new JButton("Log out");
 		

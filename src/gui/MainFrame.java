@@ -395,7 +395,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			}
 		}
 
-		else if (e.getActionCommand().equals("Show week calendar")) {
+		else if (e.getActionCommand().equals("Show calendar")) {
 			clear();
 			add(weekViewPane, BorderLayout.CENTER);
 			try {

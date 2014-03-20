@@ -91,7 +91,7 @@ public class ChangeAppmntPane extends JPanel {
 		midPane.add(starttime);
 		midPane.add(new JLabel("Endtime (HH:MM:SS):"));
 		midPane.add(endtime);
-		midPane.add(new JLabel("[OR] Duration (H:M):"));
+		midPane.add(new JLabel("[OR] Duration (H:MM):"));
 		midPane.add(duration);
 		midPane.add(new JLabel("Location:"));
 		midPane.add(location);
