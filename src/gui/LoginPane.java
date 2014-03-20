@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
@@ -20,11 +21,12 @@ public class LoginPane extends JPanel {
 	protected static JButton loginBtn;
 	
 	public LoginPane() {
-		usernameField = new JTextField(20);
-		pwField = new JPasswordField(20);
+		usernameField = new JTextField();
+		pwField = new JPasswordField();
 		loginBtn = new JButton("Log in");
 		
 		setLayout(new GridLayout(3, 2, 5, 5));
+		setPreferredSize(new Dimension(500, 150));
 		add(new JLabel("Username:"));
 		add(usernameField);
 		add(new JLabel("Password:"));
