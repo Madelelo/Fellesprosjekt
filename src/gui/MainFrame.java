@@ -63,7 +63,6 @@ public class MainFrame extends JFrame implements ActionListener {
 		changeAppmntPane = new ChangeAppmntPane();
 		invitationPane = new InvitationPane();
 		notificationPane = new NotificationPane();
-		weekViewPane = new WeekViewPane();
 		
 		responseLabel = new JLabel();
 		responsePane = new JPanel();
@@ -125,6 +124,7 @@ public class MainFrame extends JFrame implements ActionListener {
 			try {
 				changeAppmntPane.setup();
 				invitationPane.setup();
+				weekViewPane = new WeekViewPane();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -398,6 +398,11 @@ public class MainFrame extends JFrame implements ActionListener {
 		else if (e.getActionCommand().equals("Show week calendar")) {
 			clear();
 			add(weekViewPane, BorderLayout.CENTER);
+			try {
+				weekViewPane.refreshList(weekViewPane.realMonth+1, weekViewPane.realYear);
+			} catch(SQLException e2) {
+				e2.printStackTrace();
+			}
 		}
 		
 		else if (e.getActionCommand().equals("Notifications")) {
