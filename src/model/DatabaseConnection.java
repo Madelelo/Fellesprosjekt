@@ -338,6 +338,20 @@ public class DatabaseConnection {
 		
 		return db.readQuery(qry);
 	}
+	
+	/**
+	 * Returns all the appointments a user have been invited to.
+	 * 
+	 * @param String email
+	 * @return ResultSet
+	 */
+	public ResultSet getAppointments(String email) {
+		String qry = "SELECT a.appointmentID, a.date, a.starttime, i.hasanswered, i.isparticipating FROM appointment a, invited_to i "
+				+ "WHERE a.appointmentID = i.appointmentID "
+				+ "AND i.email = '" + email + "';";
+		
+		return db.readQuery(qry);
+	}
 
 	/**
 	 * Returns a ResultSet with the appointment with the given appointmentID.

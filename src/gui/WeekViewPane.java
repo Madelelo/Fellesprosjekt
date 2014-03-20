@@ -5,16 +5,21 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 public class WeekViewPane extends JPanel {
-    static JLabel monthLbl, yearLbl;
-    static JButton prevBtn, nextBtn;
-    static JTable calendarTable;
-    static JComboBox<String> yearCmb;
-    static DefaultTableModel calendarModel; //Table model
-    static JScrollPane calendarScroll; //The scrollpane
-    static int realYear, realMonth, realDay, currentYear, currentMonth;
+	private static JPanel calendarPane;
+	private static JPanel appmntPane;
+	private static JList<String> appmntList;
+    private static JLabel monthLbl, yearLbl;
+    private static JButton prevBtn, nextBtn;
+    private static JTable calendarTable;
+    private static JComboBox<String> yearCmb;
+    private static DefaultTableModel calendarModel;
+    private static JScrollPane calendarScroll;
+    protected static int realYear, realMonth, realDay, currentYear, currentMonth;
     
     public WeekViewPane() {
 
@@ -27,30 +32,36 @@ public class WeekViewPane extends JPanel {
         calendarModel = new DefaultTableModel(){public boolean isCellEditable(int rowIndex, int mColIndex){return false;}};
         calendarTable = new JTable(calendarModel);
         calendarScroll = new JScrollPane(calendarTable);
-        
-        //Set border
-        setBorder(BorderFactory.createTitledBorder("Calendar"));
+        appmntList = new JList<String>();
+        calendarPane = new JPanel();
+        appmntPane = new JPanel(new FlowLayout());
+        setLayout(new BorderLayout(5, 5));
         
         //Register action listeners
         prevBtn.addActionListener(new btnPrev_Action());
         nextBtn.addActionListener(new btnNext_Action());
         yearCmb.addActionListener(new cmbYear_Action());
         
-        add(monthLbl);
-        add(yearLbl);
-        add(yearCmb);
-        add(prevBtn);
-        add(nextBtn);
-        add(calendarScroll);
+        calendarPane.add(monthLbl);
+        calendarPane.add(yearLbl);
+        calendarPane.add(yearCmb);
+        calendarPane.add(prevBtn);
+        calendarPane.add(nextBtn);
+        calendarPane.add(calendarScroll);
+        appmntPane.add(appmntList);
+        add(calendarPane, BorderLayout.NORTH);
+        add(appmntPane, BorderLayout.SOUTH);
         
-        //Set bounds
-        setBounds(0, 0, 320, 335);
+        
+        appmntList.setPreferredSize(new Dimension(500, 230));
+        calendarPane.setPreferredSize(new Dimension(500, 285));
         monthLbl.setBounds(160-monthLbl.getPreferredSize().width/2, 25, 100, 25);
         yearLbl.setBounds(10, 305, 80, 20);
         yearCmb.setBounds(230, 305, 80, 20);
         prevBtn.setBounds(10, 25, 50, 25);
         nextBtn.setBounds(260, 25, 50, 25);
-        calendarScroll.setBounds(10, 50, 300, 250);
+        calendarScroll.setBounds(10, 50, 300, 100);
+        appmntList.setFocusable(false);
         
         //Get real month/year
         GregorianCalendar cal = new GregorianCalendar(); //Create calendar
@@ -89,6 +100,12 @@ public class WeekViewPane extends JPanel {
         
         //Refresh calendar
         refreshCalendar (realMonth, realYear); //Refresh calendar
+        try {
+			refreshList(realMonth, realYear);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
     
     public static void refreshCalendar(int month, int year){
@@ -148,6 +165,25 @@ public class WeekViewPane extends JPanel {
         }
     }
     
+    public static void refreshList(int month, int year) throws SQLException {
+    	ResultSet allAppmnts = MainFrame.db.getAppointments(MainFrame.loggedInAs.getEmail());
+    	
+    	DefaultListModel<String> listModel = new DefaultListModel<String>();
+    	if(allAppmnts != null) {
+    		while(allAppmnts.next()) {
+				if(Integer.parseInt(allAppmnts.getString(2).split("-")[1]) == month && Integer.parseInt(allAppmnts.getString(2).split("-")[0]) == year) {
+					String avtale = "Appointment " + allAppmnts.getString(2) + ", starting " + allAppmnts.getString(3) + ", with ID: " + allAppmnts.getInt(1);
+					if(!allAppmnts.getBoolean(4)) {avtale += " (Unanswered)";}
+					else if(allAppmnts.getBoolean(4) && allAppmnts.getBoolean(5)) {avtale += " (Accepted)";}
+					else if((allAppmnts.getBoolean(4)) && !(allAppmnts.getBoolean(5))) {avtale += " (Declined)";}
+					listModel.addElement(avtale);
+				}
+				
+    		}
+    	}
+    	appmntList.setModel(listModel);
+    }
+    
     static class btnPrev_Action implements ActionListener{
         public void actionPerformed (ActionEvent e){
             if (currentMonth == 0){ //Back one year
@@ -158,6 +194,12 @@ public class WeekViewPane extends JPanel {
                 currentMonth -= 1;
             }
             refreshCalendar(currentMonth, currentYear);
+            try {
+				refreshList(currentMonth+1, currentYear);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
     }
     static class btnNext_Action implements ActionListener{
@@ -170,6 +212,12 @@ public class WeekViewPane extends JPanel {
                 currentMonth += 1;
             }
             refreshCalendar(currentMonth, currentYear);
+            try {
+				refreshList(currentMonth+1, currentYear);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         }
     }
     static class cmbYear_Action implements ActionListener{
@@ -178,6 +226,12 @@ public class WeekViewPane extends JPanel {
                 String b = yearCmb.getSelectedItem().toString();
                 currentYear = Integer.parseInt(b);
                 refreshCalendar(currentMonth, currentYear);
+                try {
+    				refreshList(currentMonth+1, currentYear);
+    			} catch (SQLException e1) {
+    				// TODO Auto-generated catch block
+    				e1.printStackTrace();
+    			}
             }
         }
     }
